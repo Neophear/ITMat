@@ -39,6 +39,10 @@ namespace ITMat.Data.Repositories
                 return mapper.Map<TDestination>(result);
             });
 
+        protected async Task<T> QuerySingleAsync<T>(string query, object param)
+            => await QueryAsync(async conn =>
+                await conn.QuerySingleAsync<T>(query, param));
+
         protected async Task<T> QueryAsync<T>(Func<IDbConnection, Task<T>> func)
         {
             try

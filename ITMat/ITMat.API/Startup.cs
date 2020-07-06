@@ -6,7 +6,7 @@ using Microsoft.Extensions.Hosting;
 using ITMat.Core.Integrations;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 
-namespace ITMatService
+namespace ITMat.API
 {
     public class Startup
     {

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace ITMatService.Controllers
+namespace ITMat.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -36,15 +36,16 @@ namespace ITMatService.Controllers
 
         // GET api/<EmployeeController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        public async Task<EmployeeDTO> Get(int id)
+            => await employeeService.GetEmployeeAsync(id);
 
         // POST api/<EmployeeController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] EmployeeDTO employee)
         {
+            var id = await employeeService.InsertEmployee(employee);
+
+            return new OkObjectResult(new { Id = id });
         }
 
         // PUT api/<EmployeeController>/5

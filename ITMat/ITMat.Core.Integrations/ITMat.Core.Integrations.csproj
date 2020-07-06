@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ITMat.Core.Interfaces\ITMat.Core.Interfaces.csproj" />
+    <ProjectReference Include="..\ITMat.Core.Services\ITMat.Core.Services.csproj" />
+    <ProjectReference Include="..\ITMat.Data.Repositories\ITMat.Data.Repositories.csproj" />
+  </ItemGroup>
+
+</Project>

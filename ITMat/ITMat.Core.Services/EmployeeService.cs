@@ -24,7 +24,7 @@ namespace ITMat.Core.Services
         public async Task<IEnumerable<EmployeeDTO>> GetEmployeesAsync()
             => await repo.GetEmployeesAsync();
 
-        public async Task<int> InsertEmployee(EmployeeDTO employee)
+        public async Task<int> InsertEmployeeAsync(EmployeeDTO employee)
         {
             if (employee is null)
                 throw new ArgumentNullException(nameof(employee));
@@ -44,7 +44,7 @@ namespace ITMat.Core.Services
             return await repo.InsertEmployee(employee);
         }
 
-        public async Task UpdateEmployee(int id, EmployeeDTO employee)
+        public async Task UpdateEmployeeAsync(int id, EmployeeDTO employee)
         {
             if (id <= 0)
                 throw new ArgumentException($"{nameof(id)} must be greater than 0.", nameof(id));

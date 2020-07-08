@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ITMat.Core.Interfaces;
 using ITMat.Data.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using static ITMat.API.Util.ApiTaskExtensions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,7 +12,8 @@ namespace ITMat.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Domain Admins")]
+    [AllowAnonymous]
+    //[Authorize(Roles = "Domain Admins")]
     public class EmployeeController : ControllerBase
     {
         private readonly ILogger logger;
@@ -28,36 +27,37 @@ namespace ITMat.API.Controllers
 
         // GET: api/<EmployeeController>
         [HttpGet]
-        public async Task<IEnumerable<EmployeeDTO>> Get()
+        public async Task<IActionResult> Get()
         {
             logger.LogInformation(User.Identity.Name);
-            return await employeeService.GetEmployeesAsync();
+            return await TryOrError(async () => await employeeService.GetEmployeesAsync());
         }
 
         // GET api/<EmployeeController>/5
         [HttpGet("{id}")]
-        public async Task<EmployeeDTO> Get(int id)
-            => await employeeService.GetEmployeeAsync(id);
+        public async Task<IActionResult> Get(int id)
+            => await TryOrError(async () => await employeeService.GetEmployeeAsync(id));
 
         // POST api/<EmployeeController>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] EmployeeDTO employee)
         {
-            var id = await employeeService.InsertEmployee(employee);
-
-            return new OkObjectResult(new { Id = id });
+            return await TryOrError(async () =>
+            {
+                var id = await employeeService.InsertEmployeeAsync(employee);
+                return new CreatedAtActionResult("Get", "Employee", new { id }, new { id } );
+            });
         }
 
         // PUT api/<EmployeeController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] EmployeeDTO employee)
         {
-        }
-
-        // DELETE api/<EmployeeController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            return await TryOrError(async () =>
+            {
+                await employeeService.UpdateEmployeeAsync(id, employee);
+                return new NoContentResult();
+            });
         }
     }
 }

@@ -10,29 +10,44 @@ namespace ITMat.Data.Repositories
     internal class EmployeeRepository : AbstractDapperRepository<Employee, EmployeeDTO>, IEmployeeRepository
     {
         #region Queries
-        private const string SqlGetEmployees = "select * from employee;";
-        private const string SqlGetEmployee = "select * from employee where [Id] = @Id;";
-        private const string SqlFindEmployee = "select * from employee where [MANR] = @MANR;";
-        private const string SqlInsertEmployee = "insert into Employee ([MANR], [Name]) values(@MANR, @Name);select SCOPE_IDENTITY();";
-        private const string SqlUpdateEmployee = "update Employee set [MANR] = @MANR, [Name] = @Name, [Blacklisted] = @Blacklisted where [Id] = @Id;";
+        private const string    SqlGetEmployees = "select * from employee e inner join employeestatus s on e.status_id = s.id;",
+                                SqlGetEmployee = "select * from employee e inner join employeestatus s on e.status_id = s.id where e.[id] = @id;",
+                                SqlFindEmployee = "select * from employee e inner join employeestatus s on e.status_id = s.id where e.[manr] = @manr;",
+                                SqlInsertEmployee = "insert into employee ([manr], [name]) values(@manr, @name);select scope_identity();",
+                                SqlUpdateEmployee = "update employee set [manr] = @manr, [name] = @name, status_id = @statusid where [Id] = @Id;";
         #endregion
 
         public EmployeeRepository(IConfiguration configuration)
-            : base(configuration) { }
+            : base(configuration, MapperFactory.Create<EmployeeProfile>()) { }
 
         public async Task<EmployeeDTO> FindEmployeeAsync(string manr)
-            => await QuerySingleAsync(SqlFindEmployee, new { MANR = manr });
+            => await QuerySingleAsync<EmployeeStatus>(SqlFindEmployee, MapFromSql, new { manr });
 
         public async Task<EmployeeDTO> GetEmployeeAsync(int id)
-            => await QuerySingleAsync(SqlGetEmployee, new { Id = id });
+            => await QuerySingleAsync<EmployeeStatus>(SqlGetEmployee, MapFromSql, new { id });
 
         public async Task<IEnumerable<EmployeeDTO>> GetEmployeesAsync()
-            => await QueryMultipleAsync(SqlGetEmployees);
+            => await QueryMultipleAsync<EmployeeStatus>(SqlGetEmployees, MapFromSql);
 
         public async Task<int> InsertEmployee(EmployeeDTO employee)
             => await QuerySingleAsync<int>(SqlInsertEmployee, new { employee.MANR, employee.Name });
 
         public async Task UpdateEmployee(int id, EmployeeDTO employee)
-            => await QuerySingleAsync(SqlUpdateEmployee, new { Id = id, employee.MANR, employee.Name, employee.Blacklisted });
+            => await QuerySingleAsync(SqlUpdateEmployee, new { id, employee.MANR, employee.Name, statusid = employee.Status.Id });
+
+        private Employee MapFromSql(Employee employee, EmployeeStatus status)
+        {
+            employee.Status = status;
+            return employee;
+        }
+
+        private class EmployeeProfile : GenericProfile
+        {
+            public EmployeeProfile()
+            {
+                CreateMap<Employee, EmployeeDTO>().ReverseMap();
+                CreateMap<EmployeeStatus, EmployeeStatusDTO>().ReverseMap();
+            }
+        }
     }
 }

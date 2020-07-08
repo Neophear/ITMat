@@ -1,57 +1,90 @@
-CREATE TABLE Employee
+create table employeestatus
 (
-    Id                  INT             PRIMARY KEY IDENTITY(1, 1),
-    MANR                VARCHAR(6)      NOT NULL,
-    [Name]              NVARCHAR(250)   NOT NULL,
-    Blacklisted         BIT             NOT NULL DEFAULT 0
+    id                  int             primary key,
+    [name]              varchar(20)     not null
 )
 
-CREATE TABLE ItemType
+create table employee
 (
-    Id                  INT             PRIMARY KEY IDENTITY(1, 1),
-    [Name]              NVARCHAR(100)   NOT NULL
+    id                  int             primary key identity(1, 1),
+    manr                varchar(6)      not null,
+    [name]              nvarchar(250)   not null,
+    status_id           int             references employeestatus(id) default 1
 )
 
-CREATE TABLE Item 
+create table itemtype
 (
-    Id                  INT             PRIMARY KEY IDENTITY(1, 1),
-    TypeRefId           INT             REFERENCES ItemType(Id),
-    Discarded           BIT             NOT NULL DEFAULT 0
+    id                  int             primary key identity(1, 1),
+    [name]              nvarchar(100)   not null
 )
 
-CREATE TABLE UniqueItem
+create table item
 (
-    Id                  INT             PRIMARY KEY REFERENCES Item(Id),
-    [UniqueIdentifier]  VARCHAR(250)    NOT NULL
+    id                  int             primary key identity(1, 1),
+    type_id             int             references itemtype(id),
+    discarded           bit             not null default 0
 )
 
-CREATE TABLE MiscItem
+create table uniqueitem
 (
-    Id                  INT             PRIMARY KEY REFERENCES Item(Id)
+    id                  int             primary key references item(id),
+    [uniqueidentifier]  varchar(250)    not null
 )
 
-CREATE TABLE LoanStatus
+create table miscitem
 (
-    Id                  INT             PRIMARY KEY IDENTITY(1, 1),
-    [Name]              NVARCHAR(20)    NOT NULL
+    id                  int             primary key references item(id)
 )
 
-CREATE TABLE Loan
+create table loanstatus
 (
-    Id                  INT             PRIMARY KEY IDENTITY(1, 1),
-    EmployeeRefId       INT             REFERENCES Employee(Id),
-    DateFrom            DATE            NOT NULL,
-    DateTo              DATE            NOT NULL,
-    StatusRefId         INT             REFERENCES LoanStatus(Id),
-    RecipientRefId      INT             REFERENCES Employee(Id) NULL,
-    Note                NVARCHAR(MAX)   NOT NULL
+    id                  int             primary key,
+    [name]              nvarchar(20)    not null
 )
 
-CREATE TABLE LoanLine
+create table loan
 (
-    Id                  INT             PRIMARY KEY IDENTITY(1, 1),
-    LoanRefId           INT             REFERENCES Loan(Id) ON DELETE CASCADE,
-    ItemRefId           INT             REFERENCES Item(Id),
-    PickedUp            DATETIME        NULL,
-    Returned            DATETIME        NULL
+    id                  int             primary key identity(1, 1),
+    employee_id         int             references employee(id),
+    datefrom            date            not null,
+    dateto              date            not null,
+    status_id           int             references loanstatus(id) default 1,
+    recipient_id        int             references employee(id) null,
+    note                nvarchar(max)   not null
+);
+
+create table loanline
+(
+    id                  int             primary key identity(1, 1),
+    loan_id             int             references loan(id) on delete cascade,
+    item_id             int             references item(id),
+    pickedup            datetime        null,
+    returned            datetime        null
+);
+
+create table comment
+(
+    id                  int             primary key identity(1, 1),
+    username            varchar(50)     not null,
+    createdtime         datetime        not null default getdate(),
+    [text]              nvarchar(max)   not null
 )
+
+create table employee_comment
+(
+    comment_id          int             primary key references comment(id) on delete cascade,
+    employee_id         int             references employee(id),
+    index ix_employee_comment_eid nonclustered (employee_id)
+)
+
+go;
+
+insert into loanstatus (id, [name])
+values  (1, 'Active'),
+        (2, 'Cancelled');
+
+insert into employeestatus (id, [name])
+values  (1, 'Active'),
+        (2, 'Blacklisted'),
+        (3, 'Inactive');
+

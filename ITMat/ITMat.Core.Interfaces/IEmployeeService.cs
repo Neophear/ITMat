@@ -9,7 +9,7 @@ namespace ITMat.Core.Interfaces
         Task<EmployeeDTO> GetEmployeeAsync(int id);
         Task<EmployeeDTO> FindEmployeeAsync(string manr);
         Task<IEnumerable<EmployeeDTO>> GetEmployeesAsync();
-        Task<int> InsertEmployee(EmployeeDTO employee);
-        Task UpdateEmployee(int id, EmployeeDTO employee);
+        Task<int> InsertEmployeeAsync(EmployeeDTO employee);
+        Task UpdateEmployeeAsync(int id, EmployeeDTO employee);
     }
 }

@@ -37,9 +37,7 @@ namespace ITMat.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
 
             app.UseHttpsRedirection();
 
@@ -49,9 +47,8 @@ namespace ITMat.API
             app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+                endpoints.MapControllers()
+            );
         }
     }
 }

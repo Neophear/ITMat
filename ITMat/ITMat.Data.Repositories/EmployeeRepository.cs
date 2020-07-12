@@ -10,11 +10,11 @@ namespace ITMat.Data.Repositories
     internal class EmployeeRepository : AbstractDapperRepository<Employee, EmployeeDTO>, IEmployeeRepository
     {
         #region Queries
-        private const string    SqlGetEmployees = "select * from employee e inner join employeestatus s on e.status_id = s.id;",
-                                SqlGetEmployee = "select * from employee e inner join employeestatus s on e.status_id = s.id where e.[id] = @id;",
-                                SqlFindEmployee = "select * from employee e inner join employeestatus s on e.status_id = s.id where e.[manr] = @manr;",
-                                SqlInsertEmployee = "insert into employee ([manr], [name]) values(@manr, @name);select scope_identity();",
-                                SqlUpdateEmployee = "update employee set [manr] = @manr, [name] = @name, status_id = @statusid where [Id] = @Id;";
+        private const string    SqlGetEmployees = "select * from employee e inner join employeestatus s on e.status_id = s.id",
+                                SqlGetEmployee = "select * from employee e inner join employeestatus s on e.status_id = s.id where e.[id] = @id",
+                                SqlFindEmployee = "select * from employee e inner join employeestatus s on e.status_id = s.id where e.[manr] = @manr",
+                                SqlInsertEmployee = "insert into employee ([manr], [name]) values(@manr, @name);select scope_identity()",
+                                SqlUpdateEmployee = "update employee set [manr] = @manr, [name] = @name, status_id = @statusid where [Id] = @Id";
         #endregion
 
         public EmployeeRepository(IConfiguration configuration)

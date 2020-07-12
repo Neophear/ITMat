@@ -7,8 +7,8 @@ namespace ITMat.Data.Repositories.Entities
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
         public LoanStatus Status { get; set; } //Created, PickedUp, Returned, Cancelled
-        public Employee Employee { get; set; }
-        public Employee Recipient { get; set; }
+        public int EmployeeId { get; set; }
+        public int RecipientId { get; set; }
         public string Note { get; set; }
     }
 }

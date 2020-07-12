@@ -18,6 +18,9 @@ namespace ITMat.Core.Integrations
 
             services.AddSingleton<ICommentService, CommentService>()
                     .AddSingleton<ICommentRepository, CommentRepository>();
+
+            services.AddSingleton<ILoanService, LoanService>()
+                    .AddSingleton<ILoanRepository, LoanRepository>();
         }
     }
 }

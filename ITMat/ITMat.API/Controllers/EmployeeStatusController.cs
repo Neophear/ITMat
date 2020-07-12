@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using ITMat.Core.Interfaces;
-using ITMat.Data.DTO;
+﻿using ITMat.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+using static ITMat.API.Util.ApiTaskExtensions;
 
 namespace ITMat.API.Controllers
 {
@@ -10,14 +10,18 @@ namespace ITMat.API.Controllers
     [ApiController]
     public class EmployeeStatusController : ControllerBase
     {
+        private readonly ILogger logger;
         private readonly IEmployeeStatusService service;
 
-        public EmployeeStatusController(IEmployeeStatusService service)
-            => this.service = service;
+        public EmployeeStatusController(ILogger<EmployeeStatusController> logger, IEmployeeStatusService service)
+        {
+            this.logger = logger;
+            this.service = service;
+        }
 
         // GET: api/<EmployeeStatusController>
         [HttpGet]
-        public async Task<IEnumerable<EmployeeStatusDTO>> Get()
-            => await service.GetEmployeeStatusesAsync();
+        public async Task<IActionResult> Get()
+            => await TryOrError(logger, async () => await service.GetEmployeeStatusesAsync());
     }
 }

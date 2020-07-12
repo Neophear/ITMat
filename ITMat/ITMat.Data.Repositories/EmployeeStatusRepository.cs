@@ -10,7 +10,7 @@ namespace ITMat.Data.Repositories
     internal class EmployeeStatusRepository : AbstractDapperRepository<EmployeeStatus, EmployeeStatusDTO>, IEmployeeStatusRepository
     {
         #region Queries
-        private const string SqlGetEmployeeStatuses = "select * from employeestatus;";
+        private const string SqlGetEmployeeStatuses = "select * from employeestatus";
         #endregion
 
         public EmployeeStatusRepository(IConfiguration configuration)

@@ -51,6 +51,10 @@ namespace ITMat.Data.Repositories
             => await QueryAsync(async conn
                 => mapper.Map<IEnumerable<TDestination>>(await conn.QueryAsync(query, map, param)));
 
+        protected async Task<IEnumerable<TDestination>> QueryMultipleAsync<TSecond, TThird>(string query, Func<TSource, TSecond, TThird, TSource> map, object param = null)
+            => await QueryAsync(async conn
+                => mapper.Map<IEnumerable<TDestination>>(await conn.QueryAsync(query, map, param)));
+
         protected async Task<TDestination> QuerySingleAsync(string query, object param = null)
             => await QueryAsync(async conn =>
             {
@@ -70,7 +74,11 @@ namespace ITMat.Data.Repositories
             => await QueryAsync(async conn =>
                 mapper.Map<TDestination>((await conn.QueryAsync(query, map, param)).First()));
 
-        protected async Task<T> QuerySingleAsync<T>(string query, object param)
+        protected async Task<TDestination> QuerySingleAsync<TSecond, TThird>(string query, Func<TSource, TSecond, TThird, TSource> map, object param = null)
+            => await QueryAsync(async conn =>
+                mapper.Map<TDestination>((await conn.QueryAsync(query, map, param)).First()));
+
+        protected async Task<T> QuerySingleAsync<T>(string query, object param = null)
             => await QueryAsync(async conn =>
                 await conn.QuerySingleAsync<T>(query, param));
 

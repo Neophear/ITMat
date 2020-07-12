@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 using System.IO;
 
 namespace ITMat.API
@@ -25,7 +26,7 @@ namespace ITMat.API
             var connString = config.GetConnectionString("DbConnectionString");
 
             //Build and get logger for database migrator
-            var logger = LoggerFactory.Create(builder => builder.AddConsole().AddDebug()).CreateLogger("");
+            var logger = LoggerFactory.Create(builder => builder.AddConsole().AddDebug()).CreateLogger<DatabaseMigrator>();
 
             var migrator = new DatabaseMigrator(logger, connString);
 
@@ -33,10 +34,26 @@ namespace ITMat.API
             if (!migrator.MigrateToLatest())
                 return EXIT_FAILURE;
 
-            //Run application
-            CreateHostBuilder(args).Build().Run();
+            var nlog = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
 
-            return EXIT_SUCCESS;
+            try
+            {
+                nlog.Debug("Starting host");
+
+                //Run application
+                CreateHostBuilder(args).Build().Run();
+
+                return EXIT_SUCCESS;
+            }
+            catch (System.Exception e)
+            {
+                nlog.Error(e, "Stopped because of error");
+                throw;
+            }
+            finally
+            {
+                NLog.LogManager.Shutdown();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -44,6 +61,12 @@ namespace ITMat.API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.SetMinimumLevel(LogLevel.Trace);
+                })
+                .UseNLog();
     }
 }

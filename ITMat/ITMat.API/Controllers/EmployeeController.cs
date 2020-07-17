@@ -1,5 +1,5 @@
-﻿using ITMat.Core.Interfaces;
-using ITMat.Data.DTO;
+﻿using ITMat.Core.DTO;
+using ITMat.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

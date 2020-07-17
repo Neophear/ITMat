@@ -1,7 +1,7 @@
-﻿using ITMat.Core.Interfaces;
+﻿using ITMat.Core.Data.Interfaces;
+using ITMat.Core.Data.Repositories;
+using ITMat.Core.Interfaces;
 using ITMat.Core.Services;
-using ITMat.Data.Interfaces;
-using ITMat.Data.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ITMat.Core.Integrations
@@ -10,17 +10,17 @@ namespace ITMat.Core.Integrations
     {
         public static void AddITMatCore(this IServiceCollection services)
         {
-            services.AddSingleton<IEmployeeService, EmployeeService>()
+            services.AddTransient<IEmployeeService, EmployeeService>()
                     .AddSingleton<IEmployeeRepository, EmployeeRepository>();
 
-            services.AddSingleton<IEmployeeStatusService, EmployeeStatusService>()
-                    .AddSingleton<IEmployeeStatusRepository, EmployeeStatusRepository>();
-
-            services.AddSingleton<ICommentService, CommentService>()
+            services.AddTransient<ICommentService, CommentService>()
                     .AddSingleton<ICommentRepository, CommentRepository>();
 
-            services.AddSingleton<ILoanService, LoanService>()
+            services.AddTransient<ILoanService, LoanService>()
                     .AddSingleton<ILoanRepository, LoanRepository>();
+
+            services.AddTransient<IItemService, ItemService>()
+                    .AddSingleton<IItemRepository, ItemRepository>();
         }
     }
 }

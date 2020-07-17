@@ -1,5 +1,5 @@
-﻿using ITMat.Core.Interfaces;
-using ITMat.Data.DTO;
+﻿using ITMat.Core.DTO;
+using ITMat.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -79,7 +79,7 @@ namespace ITMat.API.Controllers
             logger.LogInformation("{username} executed Put({id}, {comment}).", User.Identity.Name, id, comment);
             return await TryOrError(logger, async () =>
                 {
-                    await service.UpdateCommentAsync(id, comment);
+                    await service.UpdateCommentAsync(id, comment.Text);
                     return new NoContentResult();
                 });
         }

@@ -10,9 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ITMat.Core.Data.Interfaces\ITMat.Core.Data.Interfaces.csproj" />
+    <ProjectReference Include="..\ITMat.Core.Data.Repositories\ITMat.Core.Data.Repositories.csproj" />
     <ProjectReference Include="..\ITMat.Core.Interfaces\ITMat.Core.Interfaces.csproj" />
     <ProjectReference Include="..\ITMat.Core.Services\ITMat.Core.Services.csproj" />
-    <ProjectReference Include="..\ITMat.Data.Repositories\ITMat.Data.Repositories.csproj" />
   </ItemGroup>
 
 </Project>

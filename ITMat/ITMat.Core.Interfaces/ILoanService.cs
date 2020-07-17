@@ -1,4 +1,4 @@
-﻿using ITMat.Data.DTO;
+﻿using ITMat.Core.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

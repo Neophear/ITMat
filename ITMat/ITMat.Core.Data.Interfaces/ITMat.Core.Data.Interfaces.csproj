@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ITMat.Core.DTO\ITMat.Core.DTO.csproj" />
     <ProjectReference Include="..\ITMat.Core.Models\ITMat.Core.Models.csproj" />
   </ItemGroup>
 

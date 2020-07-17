@@ -1,4 +1,4 @@
-﻿using ITMat.Data.DTO;
+﻿using ITMat.Core.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,5 +11,7 @@ namespace ITMat.Core.Interfaces
         Task<IEnumerable<EmployeeDTO>> GetEmployeesAsync();
         Task<int> InsertEmployeeAsync(EmployeeDTO employee);
         Task UpdateEmployeeAsync(int id, EmployeeDTO employee);
+
+        Task<IEnumerable<EmployeeStatusDTO>> GetEmployeeStatusesAsync();
     }
 }

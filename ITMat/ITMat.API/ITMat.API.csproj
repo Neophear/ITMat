@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ITMat.Core.Data.Migrations\ITMat.Core.Data.Migrations.csproj" />
     <ProjectReference Include="..\ITMat.Core.Integrations\ITMat.Core.Integrations.csproj" />
-    <ProjectReference Include="..\ITMat.Data.Migrations\ITMat.Data.Migrations.csproj" />
   </ItemGroup>
 
 

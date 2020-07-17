@@ -1,4 +1,4 @@
-﻿using ITMat.Data.DTO;
+﻿using ITMat.Core.DTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,6 +11,6 @@ namespace ITMat.Core.Interfaces
         Task<CommentDTO> GetCommentAsync(int id);
         Task<int> InsertEmployeeCommentAsync(int employeeId, CommentDTO comment);
         Task<int> InsertLoanCommentAsync(int loanId, CommentDTO comment);
-        Task UpdateCommentAsync(int id, CommentDTO comment);
+        Task UpdateCommentAsync(int id, string text);
     }
 }

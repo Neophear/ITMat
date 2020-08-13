@@ -4,7 +4,6 @@ using ITMat.Core.Interfaces;
 using ITMat.Core.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ITMat.Core.Services
@@ -28,29 +27,58 @@ namespace ITMat.Core.Services
         public async Task<IEnumerable<LoanDTO>> GetLoansAsync()
             => Mapper.Map<IEnumerable<LoanDTO>>(await repo.GetLoansAsync());
 
-        public async Task<int> InsertLoanAsync(LoanDTO loan)
+        public async Task<int> InsertLoanAsync(CreateLoanDTO dto)
         {
-            Validate(loan);
+            if (dto is null)
+                throw new ArgumentNullException(nameof(dto));
 
-            return await repo.InsertLoanAsync(new Loan
-            {
-                EmployeeId = loan.EmployeeId,
-                DateFrom = loan.DateFrom,
-                DateTo = loan.DateTo,
-                RecipientId = loan.RecipientId
-            });
+            if (dto.EmployeeId <= 0)
+                throw new ArgumentException($"{nameof(dto.EmployeeId)} cannot be less than 1.");
+
+            if (dto.DateFrom > dto.DateTo)
+                throw new ArgumentException($"{nameof(dto.DateFrom)} cannot be greater than {nameof(dto.DateTo)}.");
+
+            return await repo.InsertLoanAsync(
+                new Loan
+                {
+                    EmployeeId = dto.EmployeeId,
+                    DateFrom = dto.DateFrom,
+                    DateTo = dto.DateTo,
+                    RecipientId = dto.RecipientId,
+                    Note = dto.Note
+                },
+                dto.ItemIds ?? new int[0],
+                dto.GenericItemIds ?? new int[0]
+            );
         }
 
-        public async Task UpdateLoanAsync(int id, LoanDTO loan)
-            => await repo.UpdateLoanAsync(id, Mapper.Map<Loan>(loan));
-
-        private void Validate(LoanDTO loan)
+        public async Task UpdateLoanAsync(int id, LoanDTO dto)
         {
-            if (loan is null)
-                throw new ArgumentNullException(nameof(loan));
+            if (dto is null)
+                throw new ArgumentNullException(nameof(dto));
 
-            if (loan.DateFrom > loan.DateTo)
-                throw new ArgumentException($"{nameof(loan.DateFrom)} cannot be greater than {nameof(loan.DateTo)}");
+            if (dto.EmployeeId <= 0)
+                throw new ArgumentException($"{nameof(dto.EmployeeId)} cannot be less than 1.");
+
+            if (dto.DateFrom > dto.DateTo)
+                throw new ArgumentException($"{nameof(dto.DateFrom)} cannot be greater than {nameof(dto.DateTo)}.");
+
+            await repo.UpdateLoanAsync(id, Mapper.Map<Loan>(dto));
         }
+
+        public async Task DeleteLoanAsync(int id)
+            => await repo.DeleteLoanAsync(id);
+
+        public async Task UpdateLoanLineItemAsync(int id, int loanId, DateTime? pickedUp, DateTime? returned)
+            => await repo.UpdateLoanLineItemAsync(id, loanId, pickedUp, returned);
+
+        public async Task UpdateLoanLineGenericItemAsync(int id, int loanId, DateTime? pickedUp, DateTime? returned)
+            => await repo.UpdateLoanLineGenericItemAsync(id, loanId, pickedUp, returned);
+
+        public async Task DeleteLoanLineItemAsync(int id, int loanId)
+            => await repo.DeleteLoanLineItemAsync(id, loanId);
+
+        public async Task DeleteLoanLineGenericItemAsync(int id, int loanId)
+            => await repo.DeleteLoanLineGenericItemAsync(id, loanId);
     }
 }

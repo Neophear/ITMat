@@ -1,13 +1,12 @@
 ﻿using Dapper;
 using ITMat.Core.Models;
+using ITMat.Core.Models.Exceptions;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ITMat.Core.Data.Repositories
@@ -59,13 +58,25 @@ namespace ITMat.Core.Data.Repositories
                 return await func(connection);
             }
             catch (InvalidOperationException) { throw new KeyNotFoundException("Object was not found."); }
-            catch (Exception e) { throw new DataException("Something went wrong.", e); }
+            catch (SqlException e)
+            {
+                //Check Constraint Violation
+                if (e.Number == 547)
+                    throw new OverlapException();
+                else
+                    throw;
+            }
+            catch (Exception e)
+            {
+                throw new DataException("Something went wrong.", e);
+            }
         }
 
         protected async Task<T> Transaction<T>(Func<IDbTransaction, Task<T>> func)
         {
             using var connection = new SqlConnection(connectionString);
-            using var transaction = connection.BeginTransaction(isolationLevel);
+            await connection.OpenAsync();
+            using var transaction = await connection.BeginTransactionAsync(isolationLevel);
 
             try
             {

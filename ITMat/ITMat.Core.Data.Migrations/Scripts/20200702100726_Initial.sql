@@ -198,7 +198,7 @@ values  (1, 'Active'),
 
 go;
 
-create view vw_loan
+create view vw_loans
 as
 select  l.*,
         active = case when exists(select top 1 id from loanlineitem where loan_id = l.id and (returned is null or pickedup is null)) then 1

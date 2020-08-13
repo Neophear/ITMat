@@ -15,17 +15,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{7D1753B2-3E4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ITMat.API", "ITMat.API\ITMat.API.csproj", "{4D2B71C0-B890-4A48-837E-EF5213DF5E1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITMat.Core.Models", "ITMat.Core.Models\ITMat.Core.Models.csproj", "{A7E60A04-06A4-4A56-BE6F-ACADB4DBFA17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ITMat.Core.Models", "ITMat.Core.Models\ITMat.Core.Models.csproj", "{A7E60A04-06A4-4A56-BE6F-ACADB4DBFA17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITMat.Core.DTO", "ITMat.Core.DTO\ITMat.Core.DTO.csproj", "{542052EF-F12C-4EA3-A28F-769AF34EB0C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ITMat.Core.DTO", "ITMat.Core.DTO\ITMat.Core.DTO.csproj", "{542052EF-F12C-4EA3-A28F-769AF34EB0C9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{236F0520-7FE0-4BF6-B10C-DE03C8125383}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITMat.Core.Data.Interfaces", "ITMat.Core.Data.Interfaces\ITMat.Core.Data.Interfaces.csproj", "{53087A78-8AB1-40F1-BFA4-D6B7379AEEAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ITMat.Core.Data.Interfaces", "ITMat.Core.Data.Interfaces\ITMat.Core.Data.Interfaces.csproj", "{53087A78-8AB1-40F1-BFA4-D6B7379AEEAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITMat.Core.Data.Repositories", "ITMat.Core.Data.Repositories\ITMat.Core.Data.Repositories.csproj", "{15EDD1A1-C5DE-4753-9D71-C485373DFE83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ITMat.Core.Data.Repositories", "ITMat.Core.Data.Repositories\ITMat.Core.Data.Repositories.csproj", "{15EDD1A1-C5DE-4753-9D71-C485373DFE83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITMat.Core.Data.Migrations", "ITMat.Core.Data.Migrations\ITMat.Core.Data.Migrations.csproj", "{DDB2EBDB-D765-4C06-8BEC-3A763F2C1037}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ITMat.Core.Data.Migrations", "ITMat.Core.Data.Migrations\ITMat.Core.Data.Migrations.csproj", "{DDB2EBDB-D765-4C06-8BEC-3A763F2C1037}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{5EFCF03F-BD18-46A6-B038-30EE94987B5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITMat.UI.WPF", "ITMat.UI.WPF\ITMat.UI.WPF.csproj", "{DE1A02ED-B2A9-4F21-A8A7-0DCD147B6A9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +73,10 @@ Global
 		{DDB2EBDB-D765-4C06-8BEC-3A763F2C1037}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDB2EBDB-D765-4C06-8BEC-3A763F2C1037}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDB2EBDB-D765-4C06-8BEC-3A763F2C1037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE1A02ED-B2A9-4F21-A8A7-0DCD147B6A9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE1A02ED-B2A9-4F21-A8A7-0DCD147B6A9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE1A02ED-B2A9-4F21-A8A7-0DCD147B6A9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE1A02ED-B2A9-4F21-A8A7-0DCD147B6A9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,6 +92,7 @@ Global
 		{53087A78-8AB1-40F1-BFA4-D6B7379AEEAA} = {236F0520-7FE0-4BF6-B10C-DE03C8125383}
 		{15EDD1A1-C5DE-4753-9D71-C485373DFE83} = {236F0520-7FE0-4BF6-B10C-DE03C8125383}
 		{DDB2EBDB-D765-4C06-8BEC-3A763F2C1037} = {236F0520-7FE0-4BF6-B10C-DE03C8125383}
+		{DE1A02ED-B2A9-4F21-A8A7-0DCD147B6A9D} = {5EFCF03F-BD18-46A6-B038-30EE94987B5F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {288FBED3-20C6-4AB6-BA6E-4AB3F67680EF}

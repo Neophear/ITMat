@@ -1,6 +1,7 @@
 ﻿using ITMat.Core.Data.Interfaces;
 using ITMat.Core.Models;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,8 +23,8 @@ namespace ITMat.Core.Data.Repositories
                              //Insert
                              SqlInsertLoan = "insert into loan ([datefrom], [dateto], [employee_id], [recipient_id], [note]) values(@datefrom, @dateto, @employeeId, @recipientId, @note);" +
                                              "select scope_identity();",
-                             SqlInsertLoanLineItem = "insert into loanlineitem (item_id, loan_id, pickedup, returned) values(@itemId, @loanId, @pickedup, @returned)",
-                             SqlInsertLoanLineGenericItem = "insert into loanlinegenericitem (genericitem_id, loan_id, pickedup, returned) values(@genericItemId, @loanId, @pickedup, @returned)",
+                             SqlInsertLoanLineItem = "insert into loanlineitem (item_id, loan_id) values(@itemId, @loanId)",
+                             SqlInsertLoanLineGenericItem = "insert into loanlinegenericitem (genericitem_id, loan_id) values(@genericItemId, @loanId)",
 
                              //Update (loan_id is also checked on linechanges for extra safety)
                              SqlUpdateLoan = "update loan set [datefrom] = @datefrom, [dateto] = @dateto, [employee_id] = @employeeId, [recipient_id] = @recipientId, [note] = @note where [Id] = @loanId",
@@ -57,21 +58,19 @@ namespace ITMat.Core.Data.Repositories
         public async Task<IEnumerable<LoanLineGenericItem>> GetLoanLineGenericItemsAsync(int loanId)
             => await QueryMultipleAsync<LoanLineGenericItem>(SqlGetLoanLineGenericItems, new { loanId });
 
-        public async Task<int> InsertLoanAsync(Loan loan)
-        {
-            return await Transaction(async transaction =>
+        public async Task<int> InsertLoanAsync(Loan loan, IEnumerable<int> itemIds, IEnumerable<int> genericItemIds)
+            => await Transaction(async transaction =>
             {
                 var loanId = await QuerySingleAsync<int>(SqlInsertLoan, new { loan.DateFrom, loan.DateTo, loan.EmployeeId, loan.RecipientId, loan.Note });
+                
+                foreach (var itemId in itemIds)
+                    await ExecuteAsync(SqlInsertLoanLineItem, new { itemId, loanId });
 
-                foreach (var line in loan.ItemLines)
-                    await ExecuteAsync(SqlInsertLoanLineItem, new { itemId = line.Item.Id, loanId, line.PickedUp, line.Returned });
-
-                foreach (var line in loan.GenericItemLines)
-                    await ExecuteAsync(SqlInsertLoanLineGenericItem, new { genericItemId = line.GenericItem.Id, loanId, line.PickedUp, line.Returned });
+                foreach (var genericItemId in genericItemIds)
+                    await ExecuteAsync(SqlInsertLoanLineGenericItem, new { genericItemId, loanId });
 
                 return loanId;
             });
-        }
 
         public async Task UpdateLoanAsync(int loanId, Loan loan)
         {
@@ -127,12 +126,44 @@ namespace ITMat.Core.Data.Repositories
             });
         }
 
+        public async Task UpdateLoanLineItemAsync(int id, int loanId, DateTime? pickedUp, DateTime? returned)
+        {
+            var rowsAffected = await ExecuteAsync(SqlUpdateLoanLineItem, new { id, pickedUp, returned, loanId });
+
+            if (rowsAffected == 0)
+                throw new KeyNotFoundException($"Could not find itemLine with id {id} in loan {loanId}.");
+        }
+
+        public async Task UpdateLoanLineGenericItemAsync(int id, int loanId, DateTime? pickedUp, DateTime? returned)
+        {
+            var rowsAffected = await ExecuteAsync(SqlUpdateLoanLineGenericItem, new { id, pickedUp, returned, loanId });
+
+            if (rowsAffected == 0)
+                throw new KeyNotFoundException($"Could not find genericItemLine with id {id} in loan {loanId}.");
+        }
+
         public async Task DeleteLoanAsync(int loanId)
         {
             var rowsAffected = await ExecuteAsync(SqlDeleteLoan, new { loanId });
 
             if (rowsAffected == 0)
-                throw new KeyNotFoundException($"Could not find loan with id {loanId}");
+                throw new KeyNotFoundException($"Could not find loan with id {loanId}.");
+        }
+
+        public async Task DeleteLoanLineItemAsync(int id, int loanId)
+        {
+            var rowsAffected = await ExecuteAsync(SqlDeleteLoanLineItems, new { id, loanId });
+
+            if (rowsAffected == 0)
+                throw new KeyNotFoundException($"Could not find loanlineitem with id {id} in loan {loanId}.");
+        }
+
+        public async Task DeleteLoanLineGenericItemAsync(int id, int loanId)
+        {
+            var rowsAffected = await ExecuteAsync(SqlDeleteLoanLineGenericItems, new { id, loanId });
+
+            if (rowsAffected == 0)
+                throw new KeyNotFoundException($"Could not find loanlinegenericitem with id {id} in loan {loanId}.");
         }
     }
 }

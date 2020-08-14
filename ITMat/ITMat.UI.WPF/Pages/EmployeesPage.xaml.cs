@@ -1,11 +1,7 @@
-﻿using ITMat.UI.WPF.Interfaces;
-using ITMat.UI.WPF.Models;
-using ITMat.UI.WPF.Pages;
+﻿using ITMat.UI.WPF.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,18 +12,18 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ITMat.UI.WPF
+namespace ITMat.UI.WPF.Pages
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for EmployeesPage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class EmployeesPage : Page
     {
-        public MainWindow()
+        EmployeesViewModel viewModel = new EmployeesViewModel();
+
+        public EmployeesPage()
         {
             InitializeComponent();
-
-            frmContent.Navigate(new EmployeesPage());
         }
     }
 }

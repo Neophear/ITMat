@@ -14,9 +14,7 @@ namespace ITMat.UI.WPF.ServiceLayer
         private readonly IRestClient client;
 
         public EmployeeService(IConfiguration configuration)
-        {
-            client = new RestClient(configuration["api_url"]);
-        }
+            => client = new RestClient(configuration["api_url"]);
 
         public async Task<IEnumerable<Employee>> GetEmployeesAsync()
         {
@@ -24,10 +22,7 @@ namespace ITMat.UI.WPF.ServiceLayer
             var response = await client.ExecuteAsync(request);
 
             if (response.IsSuccessful)
-            {
-                var employees = JsonConvert.DeserializeObject<IEnumerable<Employee>>(response.Content);
-                return employees;
-            }
+                return JsonConvert.DeserializeObject<IEnumerable<Employee>>(response.Content);
             else
                 throw new Exception("Could not get employees.");
         }

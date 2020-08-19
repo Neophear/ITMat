@@ -1,5 +1,4 @@
-﻿using ITMat.UI.WPF.Interfaces;
-using ITMat.UI.WPF.Models;
+﻿using ITMat.UI.WPF.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -18,9 +17,14 @@ namespace ITMat.UI.WPF.ViewModels
             }
         }
 
-        public EmployeesViewModel(IEmployeeService service)
+        public EmployeesViewModel()
         {
-
+            Employees = new List<Employee>
+            {
+                new Employee { Id = 1, MANR = "370929", Name = "Stiig Gade", Status = new EmployeeStatus { Name = "Aktiv" } },
+                new Employee { Id = 2, MANR = "123456", Name = "Peter Petersen", Status = new EmployeeStatus { Name = "Aktiv" } },
+                new Employee { Id = 3, MANR = "654321", Name = "Jørgen Jørgensen", Status = new EmployeeStatus { Name = "Aktiv" } },
+            };
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -10,6 +10,8 @@ using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using ITMat.UI.WPF.Interfaces;
 using ITMat.UI.WPF.ServiceLayer;
+using ITMat.UI.WPF.ViewModels;
+using ITMat.UI.WPF.Pages;
 
 namespace ITMat.UI.WPF
 {
@@ -18,7 +20,7 @@ namespace ITMat.UI.WPF
     /// </summary>
     public partial class App : Application
     {
-        public IServiceProvider ServiceProvider { get; private set; }
+        public static IServiceProvider ServiceProvider { get; private set; }
         public IConfiguration Configuration { get; private set; }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -33,9 +35,6 @@ namespace ITMat.UI.WPF
             ConfigureServices(serviceCollection);
 
             ServiceProvider = serviceCollection.BuildServiceProvider();
-
-            var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
-            mainWindow.Show();
         }
 
         private void ConfigureServices(ServiceCollection services)
@@ -43,6 +42,10 @@ namespace ITMat.UI.WPF
             services.AddTransient<IConfiguration>(services => Configuration);
             services.AddTransient<MainWindow>();
             services.AddTransient<IEmployeeService, EmployeeService>();
+
+            services.AddSingleton<EmployeesViewModel>();
+
+            services.AddTransient<EmployeesPage>();
         }
 
         private readonly IEnumerable<KeyValuePair<string, string>> config = new List<KeyValuePair<string, string>>

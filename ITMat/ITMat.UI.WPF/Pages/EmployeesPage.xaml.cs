@@ -19,8 +19,6 @@ namespace ITMat.UI.WPF.Pages
     /// </summary>
     public partial class EmployeesPage : Page
     {
-        EmployeesViewModel viewModel = new EmployeesViewModel();
-
         public EmployeesPage()
         {
             InitializeComponent();

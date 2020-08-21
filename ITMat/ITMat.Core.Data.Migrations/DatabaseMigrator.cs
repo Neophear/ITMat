@@ -21,7 +21,7 @@ namespace ITMat.Core.Data.Migrations
             logger.LogInformation("Starting migration engine.");
 
             //TODO! This drops the database and MUST be removed in PROD
-            DropDatabase.For.SqlDatabase(connectionString);
+            //DropDatabase.For.SqlDatabase(connectionString);
 
             EnsureDatabase.For.SqlDatabase(connectionString);
 

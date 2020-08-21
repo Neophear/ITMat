@@ -7,15 +7,22 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="EmployeesPage"
-      DataContext="{Binding Source={StaticResource Locator}, Path=EmployeesViewModel}">
+      DataContext="{Binding Source={StaticResource Locator}, Path=EmployeesViewModel}"
+      Loaded="{Binding LoadData}">
     <Grid>
-        <DataGrid x:Name="dgEmployees" HorizontalAlignment="Stretch" SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Button Content="Test" VerticalAlignment="Top" Grid.Row="0" Command="{Binding RefreshCommand}" />
+        <DataGrid x:Name="dgEmployees" Grid.Row="1" HorizontalAlignment="Stretch" SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False"
                     ColumnWidth="*" SelectedValuePath="Id" ItemsSource="{Binding Employees}" CanUserReorderColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
                 <DataGridTextColumn Header="MANR" Binding="{Binding MANR}" />
                 <DataGridTextColumn Header="Navn" Binding="{Binding Name}" />
-                <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
+                <DataGridTextColumn Header="Status" Binding="{Binding Status.Name}" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

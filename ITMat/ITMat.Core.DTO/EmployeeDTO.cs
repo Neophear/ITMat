@@ -4,6 +4,6 @@
     {
         public string MANR { get; set; }
         public string Name { get; set; }
-        public EmployeeStatusDTO Status { get; set; }
+        public int Status { get; set; }
     }
 }

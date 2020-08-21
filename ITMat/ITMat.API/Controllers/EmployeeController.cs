@@ -40,6 +40,13 @@ namespace ITMat.API.Controllers
             return await TryOrError(logger, async () => await employeeService.GetEmployeeAsync(id));
         }
 
+        [HttpGet("status")]
+        public async Task<IActionResult> GetStatuses()
+        {
+            logger.LogInformation("{username} executed GetStatuses().", User.Identity.Name);
+            return await TryOrError(logger, async () => await employeeService.GetEmployeeStatusesAsync());
+        }
+
         // POST api/<EmployeeController>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] EmployeeDTO employee)

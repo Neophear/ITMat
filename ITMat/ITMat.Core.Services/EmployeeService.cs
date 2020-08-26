@@ -64,7 +64,12 @@ namespace ITMat.Core.Services
         {
             public EmployeeProfile()
             {
-                CreateMap<Employee, EmployeeDTO>().ForMember(dto => dto.Status, opt => opt.MapFrom(e => e.Status.Id));
+                CreateMap<Employee, EmployeeDTO>()
+                    .ForMember(dto => dto.Status, opt => opt.MapFrom(e => e.Status.Id));
+
+                CreateMap<EmployeeDTO, Employee>()
+                    .ForMember(e => e.Status, opt => opt.MapFrom(dto => new EmployeeStatus { Id = dto.Status }));
+
                 CreateMap<EmployeeStatus, EmployeeStatusDTO>();
             }
         }

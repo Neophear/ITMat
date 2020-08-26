@@ -40,6 +40,9 @@ namespace ITMat.UI.WindowsApp
         private void MenuStartPage(object sender, RoutedEventArgs e)
             => ChangePage(new StartPage());
 
+        private void MenuLoans(object sender, RoutedEventArgs e)
+            => ChangePage(new LoansPage());
+
         private void MenuEmployees(object sender, RoutedEventArgs e)
             => ChangePage(new EmployeesPage());
     }

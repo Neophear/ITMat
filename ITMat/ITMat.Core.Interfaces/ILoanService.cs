@@ -7,7 +7,7 @@ namespace ITMat.Core.Interfaces
 {
     public interface ILoanService
     {
-        Task<IEnumerable<LoanDTO>> GetLoansAsync();
+        Task<IEnumerable<LoanListedDTO>> GetLoansListedAsync();
         Task<IEnumerable<LoanDTO>> GetActiveLoansAsync();
         Task<IEnumerable<LoanDTO>> GetFinishedLoansAsync();
         Task<LoanDTO> GetLoanAsync(int id);

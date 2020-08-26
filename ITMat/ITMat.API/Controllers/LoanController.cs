@@ -27,7 +27,7 @@ namespace ITMat.API.Controllers
         public async Task<IActionResult> Get()
         {
             logger.LogInformation("{username} executed Get().", User.Identity.Name);
-            return await TryOrError(logger, async () => await service.GetLoansAsync());
+            return await TryOrError(logger, async () => await service.GetLoansListedAsync());
         }
 
         // GET api/<LoanController>/5

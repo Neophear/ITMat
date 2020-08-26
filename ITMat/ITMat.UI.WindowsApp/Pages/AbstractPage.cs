@@ -7,36 +7,6 @@ namespace ITMat.UI.WindowsApp.Pages
 {
     public abstract class AbstractPage : Page
     {
-        public List<MenuItem> Menu { get; } = new List<MenuItem>();
-
-        public delegate void PageChangeRequestEventHandler(object sender, AbstractPage newPage);
-
-        public event PageChangeRequestEventHandler OnPageChangeRequest;
-
-        #region IsBusy
-        public bool IsBusy
-        {
-            get { return (bool)GetValue(IsBusyProperty); }
-            set { SetValue(IsBusyProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for IsBusy.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsBusyProperty =
-            DependencyProperty.Register("IsBusy", typeof(bool), typeof(AbstractPage), new PropertyMetadata(false));
-        #endregion
-
-        #region BusyMessage
-        public string BusyMessage
-        {
-            get { return (string)GetValue(BusyMessageProperty); }
-            set { SetValue(BusyMessageProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for BusyMessage.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty BusyMessageProperty =
-            DependencyProperty.Register("BusyMessage", typeof(string), typeof(AbstractPage), new PropertyMetadata(""));
-        #endregion
-
         #region Status
         public string Status
         {
@@ -49,16 +19,41 @@ namespace ITMat.UI.WindowsApp.Pages
             DependencyProperty.Register("Status", typeof(string), typeof(AbstractPage), new PropertyMetadata(""));
         #endregion
 
-        protected void PageChangeRequest(AbstractPage newPage)
+        #region Mode
+        public PageMode Mode
         {
-            OnPageChangeRequest?.Invoke(this, newPage);
+            get { return (PageMode)GetValue(ModeProperty); }
+            set { SetValue(ModeProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for Mode.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ModeProperty =
+            DependencyProperty.Register("Mode", typeof(PageMode), typeof(AbstractPage), new PropertyMetadata(PageMode.Read));
+        #endregion
+
+        public List<MenuItem> Menu { get; } = new List<MenuItem>();
+
+        public delegate void PageChangeRequestEventHandler(object sender, AbstractPage newPage);
+
+        public event PageChangeRequestEventHandler OnPageChangeRequest;
+
+        protected void PageChangeRequest(AbstractPage newPage)
+            => OnPageChangeRequest?.Invoke(this, newPage);
 
         protected void AddMenuItem(string header, Action clickEvent)
         {
             MenuItem menuItem = new MenuItem { Header = header };
             menuItem.Click += (_, __) => clickEvent();
             Menu.Add(menuItem);
+        }
+
+        public enum PageMode
+        {
+            Create,
+            Read,
+            Edit,
+            BusyCreating,
+            BusyUpdating
         }
     }
 }

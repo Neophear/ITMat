@@ -6,8 +6,12 @@ namespace ITMat.UI.WindowsApp.Services
 {
     public interface IEmployeeService
     {
+        Task<int> CreateEmployeeAsync(EmployeeDTO employee);
+
         Task<IEnumerable<EmployeeDTO>> GetEmployeesAsync();
         Task<EmployeeDTO> GetEmployeeAsync(int id);
         Task<IEnumerable<EmployeeStatusDTO>> GetStatusesAsync();
+
+        Task UpdateEmployeeAsync(int id, EmployeeDTO employee);
     }
 }

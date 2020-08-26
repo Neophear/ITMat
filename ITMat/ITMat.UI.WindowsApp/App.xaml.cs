@@ -4,9 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
-using System.Windows.Media;
 
 namespace ITMat.UI.WindowsApp
 {
@@ -17,18 +15,6 @@ namespace ITMat.UI.WindowsApp
     {
         public static IServiceProvider ServiceProvider { get; private set; }
         public IConfiguration Configuration { get; private set; }
-
-        public App() : base()
-        {
-            // Setup Quick Converter.
-            // Add the System namespace so we can use primitive types (i.e. int, etc.).
-            QuickConverter.EquationTokenizer.AddNamespace(typeof(object));
-            // Add the System.Windows namespace so we can use Visibility.Collapsed, etc.
-            QuickConverter.EquationTokenizer.AddNamespace(typeof(Visibility));
-
-            QuickConverter.EquationTokenizer.AddNamespace(typeof(Brushes));
-            QuickConverter.EquationTokenizer.AddExtensionMethods(typeof(Enumerable));
-        }
 
         protected override void OnStartup(StartupEventArgs e)
         {

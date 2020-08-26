@@ -19,6 +19,7 @@
                 <MenuItem Header="Afslut" Click="MenuFileExit" />
             </MenuItem>
             <MenuItem Header="Startside" Click="MenuStartPage" />
+            <MenuItem Header="Udlån" Click="MenuLoans" />
             <MenuItem Header="Medarbejdere" Click="MenuEmployees" />
         </Menu>
         <Frame x:Name="frmContent" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" NavigationUIVisibility="Hidden"/>

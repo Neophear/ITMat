@@ -1,0 +1,12 @@
+﻿<TextBox x:Class="ITMat.UI.WindowsApp.Controls.EditableTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+             xmlns:local="clr-namespace:ITMat.UI.WindowsApp.Controls">
+    <!--<TextBox.Style>
+        <Style TargetType="{x:Type local:EditableTextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="IsReadOnly" Value="{c:Binding 'Mode == local:Abstract'}" />
+            <Setter Property="Background" Value="{c:Binding '(int)$P == 2 ? Brushes.Cornsilk : Brushes.White', P={Binding Mode}}" />
+        </Style>
+    </TextBox.Style>-->
+</TextBox>

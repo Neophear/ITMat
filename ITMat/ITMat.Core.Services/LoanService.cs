@@ -2,30 +2,60 @@
 using ITMat.Core.DTO;
 using ITMat.Core.Interfaces;
 using ITMat.Core.Models;
+using ITMat.Core.Models.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ITMat.Core.Services
 {
     public class LoanService : AbstractService<Loan, LoanDTO>, ILoanService
     {
-        private readonly ILoanRepository repo;
+        private readonly ILoanRepository loanRepo;
+        private readonly IEmployeeRepository employeeRepo;
 
-        public LoanService(ILoanRepository repo)
-            => this.repo = repo;
+        public LoanService(ILoanRepository loanRepo, IEmployeeRepository employeeRepo)
+        {
+            this.loanRepo = loanRepo;
+            this.employeeRepo = employeeRepo;
+        }
 
         public async Task<IEnumerable<LoanDTO>> GetActiveLoansAsync()
-            => Mapper.Map<IEnumerable<LoanDTO>>(await repo.GetActiveLoansAsync());
+            => Mapper.Map<IEnumerable<LoanDTO>>(await loanRepo.GetActiveLoansAsync());
 
         public async Task<IEnumerable<LoanDTO>> GetFinishedLoansAsync()
-            => Mapper.Map<IEnumerable<LoanDTO>>(await repo.GetFinishedLoansAsync());
+            => Mapper.Map<IEnumerable<LoanDTO>>(await loanRepo.GetFinishedLoansAsync());
 
         public async Task<LoanDTO> GetLoanAsync(int id)
-            => Mapper.Map<LoanDTO>(await repo.GetLoanAsync(id));
+            => Mapper.Map<LoanDTO>(await loanRepo.GetLoanAsync(id));
 
         public async Task<IEnumerable<LoanDTO>> GetLoansAsync()
-            => Mapper.Map<IEnumerable<LoanDTO>>(await repo.GetLoansAsync());
+            => Mapper.Map<IEnumerable<LoanDTO>>(await loanRepo.GetLoansAsync());
+
+        public async Task<IEnumerable<LoanListedDTO>> GetLoansListedAsync()
+        {
+            var loans = Mapper.Map<IEnumerable<LoanDTO>>(await loanRepo.GetLoansAsync());
+
+            var loanListed = new List<LoanListedDTO>(loans.Count());
+
+            foreach (var loan in loans)
+            {
+                var employee = await employeeRepo.GetEmployeeAsync(loan.EmployeeId);
+
+                loanListed.Add(new LoanListedDTO
+                {
+                    Id = loan.Id,
+                    MANR = employee.MANR,
+                    Name = employee.Name,
+                    DateFrom = loan.DateFrom,
+                    DateTo = loan.DateTo,
+                    Active = loan.Active
+                });
+            }
+
+            return loanListed;
+        }
 
         public async Task<int> InsertLoanAsync(CreateLoanDTO dto)
         {
@@ -35,10 +65,17 @@ namespace ITMat.Core.Services
             if (dto.EmployeeId <= 0)
                 throw new ArgumentException($"{nameof(dto.EmployeeId)} cannot be less than 1.");
 
+            var employee = await employeeRepo.GetEmployeeAsync(dto.EmployeeId);
+
+            if (employee is null)
+                throw new KeyNotFoundException($"Could not find employee with Id {dto.EmployeeId}.");
+            else if (!employee.Status.CanLend)
+                throw new LendingProhibitedException();
+
             if (dto.DateFrom > dto.DateTo)
                 throw new ArgumentException($"{nameof(dto.DateFrom)} cannot be greater than {nameof(dto.DateTo)}.");
 
-            return await repo.InsertLoanAsync(
+            return await loanRepo.InsertLoanAsync(
                 new Loan
                 {
                     EmployeeId = dto.EmployeeId,
@@ -63,22 +100,22 @@ namespace ITMat.Core.Services
             if (dto.DateFrom > dto.DateTo)
                 throw new ArgumentException($"{nameof(dto.DateFrom)} cannot be greater than {nameof(dto.DateTo)}.");
 
-            await repo.UpdateLoanAsync(id, Mapper.Map<Loan>(dto));
+            await loanRepo.UpdateLoanAsync(id, Mapper.Map<Loan>(dto));
         }
 
         public async Task DeleteLoanAsync(int id)
-            => await repo.DeleteLoanAsync(id);
+            => await loanRepo.DeleteLoanAsync(id);
 
         public async Task UpdateLoanLineItemAsync(int id, int loanId, DateTime? pickedUp, DateTime? returned)
-            => await repo.UpdateLoanLineItemAsync(id, loanId, pickedUp, returned);
+            => await loanRepo.UpdateLoanLineItemAsync(id, loanId, pickedUp, returned);
 
         public async Task UpdateLoanLineGenericItemAsync(int id, int loanId, DateTime? pickedUp, DateTime? returned)
-            => await repo.UpdateLoanLineGenericItemAsync(id, loanId, pickedUp, returned);
+            => await loanRepo.UpdateLoanLineGenericItemAsync(id, loanId, pickedUp, returned);
 
         public async Task DeleteLoanLineItemAsync(int id, int loanId)
-            => await repo.DeleteLoanLineItemAsync(id, loanId);
+            => await loanRepo.DeleteLoanLineItemAsync(id, loanId);
 
         public async Task DeleteLoanLineGenericItemAsync(int id, int loanId)
-            => await repo.DeleteLoanLineGenericItemAsync(id, loanId);
+            => await loanRepo.DeleteLoanLineGenericItemAsync(id, loanId);
     }
 }

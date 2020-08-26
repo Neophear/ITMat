@@ -6,7 +6,7 @@ namespace ITMat.UI.WindowsApp.Services
 {
     public interface ILoanService
     {
-        Task<IEnumerable<LoanDTO>> GetLoansAsync();
+        Task<IEnumerable<LoanListedDTO>> GetLoansAsync();
         Task<IEnumerable<LoanDTO>> GetEmployeeLoansAsync(int employeeId);
         Task<LoanDTO> GetLoanAsync(int id);
     }

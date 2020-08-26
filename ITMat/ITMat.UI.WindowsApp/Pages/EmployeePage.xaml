@@ -4,7 +4,8 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:ITMat.UI.WindowsApp.Pages"
-      xmlns:qc="http://QuickConverter.CodePlex.com/"
+      xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+      xmlns:control="clr-namespace:ITMat.UI.WindowsApp.Controls"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
       DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -12,41 +13,44 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" Text="Id" />
-        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=Employee.Id}" Margin="5" Background="LightGray" HorizontalAlignment="Left" Width="200" IsReadOnly="True" />
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Id}" Margin="5" Background="LightGray" HorizontalAlignment="Left" Width="200" IsReadOnly="True" />
 
         <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="MANR" />
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Employee.MANR}" Margin="5" Background="{qc:Binding '$P ? Brushes.Cornsilk : Brushes.LightGray', P={Binding Path=Editing}}" HorizontalAlignment="Left" Width="200" IsReadOnly="{qc:Binding '!$P', P={Binding Editing}}" />
+        <control:EditableTextBox Grid.Row="1" Grid.Column="1" Text="{Binding MANR}" Margin="5"
+                 Mode="{Binding Mode}" HorizontalAlignment="Left" Width="200" />
 
         <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Text="Navn" />
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=Employee.Name}" Margin="5"
-                 HorizontalAlignment="Left" Width="200" IsReadOnly="{qc:Binding '!$P', P={Binding Editing}}"
-                 Background="{qc:Binding '$P ? Brushes.Cornsilk : Brushes.LightGray', P={Binding Path=Editing}}" />
+        <control:EditableTextBox Grid.Row="2" Grid.Column="1" Text="{Binding Name}" Margin="5"
+                 Mode="{Binding Mode}" HorizontalAlignment="Left" Width="200" />
 
         <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Text="Status" />
-        <ComboBox Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Width="200" Margin="5"
-                  ItemsSource="{Binding Path=Statuses}" IsEnabled="{qc:Binding '$P', P={Binding Editing}}"
-                  Background="{qc:Binding '$P ? Brushes.Cornsilk : Brushes.LightGray', P={Binding Path=Editing}}"
-                  DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding Path=Employee.Status}"/>
-
-        <!--<TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=Employee.Status.Name}" Margin="5" HorizontalAlignment="Left"
-                 Width="200" IsReadOnly="{qc:Binding '!$P', P={Binding Editing}}"
-                 Background="{qc:Binding '$P ? Brushes.Cornsilk : Brushes.LightGray', P={Binding Path=Editing}}" />-->
+        <TextBox Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Width="200" Margin="5" IsReadOnly="True" TextWrapping="Wrap"
+                 Visibility="{c:Binding 'Mode == PageMode.Read'}"
+                 Text="{c:Binding 'Statuses.FirstOrDefault(s => s.Id == 1).Name', Mode=OneWay}" />
+        <!--Text="{c:Binding 'Statuses.FirstOrDefault(s => s.Id == 1).Name'}" />-->
+        <!--<ComboBox Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Width="200" Height="18" Margin="5" ItemsSource="{Binding Statuses}"
+                  Visibility="{qc:Binding '(int)$P == 0 || (int)$P == 2 ? Visibility.Visible : Visibility.Collapsed', P={Binding Mode}}"
+                  Background="{qc:Binding '$P ? Brushes.Cornsilk : Brushes.LightGray', P={Binding Mode}}"
+                  DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding Employee.Status}" />-->
 
         <StackPanel Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Content="Rediger" Visibility="{qc:Binding '!$P ? Visibility.Visible : Visibility.Collapsed', P={Binding Path=Editing}}" Margin="5" Padding="5" Click="BtnEdit_Click" />
-            <Button Content="Annuller" Visibility="{qc:Binding '$P ? Visibility.Visible : Visibility.Collapsed', P={Binding Path=Editing}}" Margin="5" Padding="5" Click="BtnCancel_Click" />
-            <Button Content="Gem" Visibility="{qc:Binding '$P ? Visibility.Visible : Visibility.Collapsed', P={Binding Path=Editing}}" Margin="5" Padding="5" Click="BtnSave_Click" />
+            <Button Content="Rediger" Margin="5" Padding="5" Click="BtnEdit_Click"
+                    IsEnabled="{c:Binding '(int)Mode == 1'}"
+                    Visibility="{c:Binding '(int)Mode == 1 ? Visibility.Visible : Visibility.Collapsed'}" />
+            <!--<Button Content="Annuller" Visibility="{qc:Binding '(int)$P == 2 ? Visibility.Visible : Visibility.Collapsed', P={Binding Mode}}" Margin="5" Padding="5" Click="BtnCancel_Click" />
+            <Button Content="Gem" Visibility="{qc:Binding '(int)$P == 2 ? Visibility.Visible : Visibility.Collapsed', P={Binding Mode}}" Margin="5" Padding="5" Click="BtnUpdate_Click" />
+            <Button Content="Gem" Visibility="{qc:Binding '(int)$P == 0 ? Visibility.Visible : Visibility.Collapsed', P={Binding Mode}}" Margin="5" Padding="5" Click="BtnCreate_Click" />-->
         </StackPanel>
 
         <DataGrid Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" SelectionMode="Single" IsReadOnly="True"

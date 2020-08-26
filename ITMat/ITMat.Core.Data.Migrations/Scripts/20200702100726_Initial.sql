@@ -1,7 +1,8 @@
 create table employeestatus
 (
     id                  int             primary key,
-    [name]              varchar(20)     not null
+    [name]              varchar(20)     not null,
+    canlend           bit             not null default 1
 );
 
 create table employee
@@ -23,7 +24,7 @@ create table item
     id                  int             primary key identity(1, 1),
     identifier          varchar(250)    unique not null,
     model               varchar(250)    not null,
-    type_id             int             references itemtype(id) not null,
+    [type_id]           int             references itemtype(id) not null,
     discarded           bit             not null default 0
 );
 
@@ -191,10 +192,10 @@ add constraint c_loanlineitem_checkoverlap check (dbo.udf_isLineValid(item_id, l
 
 go;
 
-insert into employeestatus (id, [name])
-values  (1, 'Active'),
-        (2, 'Blacklisted'),
-        (3, 'Inactive');
+insert into employeestatus (id, [name], canlend)
+values  (1, 'Active', 1),
+        (2, 'Blacklisted', 0),
+        (3, 'Inactive', 0);
 
 go;
 

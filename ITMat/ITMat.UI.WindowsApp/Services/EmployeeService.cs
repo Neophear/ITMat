@@ -5,52 +5,58 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using RestSharp.Authenticators;
-using ITMat.UI.WindowsApp.Models.Exceptions;
 
 namespace ITMat.UI.WindowsApp.Services
 {
-    public class EmployeeService : IEmployeeService
+    public class EmployeeService : AbstractService, IEmployeeService
     {
-        private readonly IRestClient client;
-
         public EmployeeService(IConfiguration configuration)
+            : base(configuration) { }
+
+        public async Task<int> CreateEmployee(EmployeeDTO employee)
         {
-            client = new RestClient(configuration["api_url"])
-            {
-                Authenticator = new NtlmAuthenticator()
-            };
+            var request = new RestRequest("employee", Method.POST);
+            request.AddJsonBody(employee);
+            var response = await ExecuteRequestAsync(request);
+
+            return JsonConvert.DeserializeObject<dynamic>(response.Content).Id;
         }
 
-        public Task<EmployeeDTO> GetEmployeeAsync(int id)
+        public Task<int> CreateEmployeeAsync(EmployeeDTO employee)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<EmployeeDTO> GetEmployeeAsync(int id)
+        {
+            var request = new RestRequest($"employee/{id}", Method.GET);
+            var response = await ExecuteRequestAsync(request);
+
+            return JsonConvert.DeserializeObject<EmployeeDTO>(response.Content);
         }
 
         public async Task<IEnumerable<EmployeeDTO>> GetEmployeesAsync()
         {
             var request = new RestRequest("employee", Method.GET);
-            var response = await client.ExecuteAsync(request);
+            var response = await ExecuteRequestAsync(request);
 
-            if (response.IsSuccessful)
-                return JsonConvert.DeserializeObject<IEnumerable<EmployeeDTO>>(response.Content);
-            else
-            {
-                switch (response.StatusCode)
-                {
-                    case System.Net.HttpStatusCode.Unauthorized:
-                        throw new UnauthorizedException("Din bruger kunne ikke verificeres.");
-                    case System.Net.HttpStatusCode.Forbidden:
-                        throw new UnauthorizedException();
-                    default:
-                        throw new Exception("Could not get employees.");
-                }
-            }
+            return JsonConvert.DeserializeObject<IEnumerable<EmployeeDTO>>(response.Content);
         }
 
-        public Task<IEnumerable<EmployeeStatusDTO>> GetStatusesAsync()
+        public async Task<IEnumerable<EmployeeStatusDTO>> GetStatusesAsync()
         {
-            throw new NotImplementedException();
+            var request = new RestRequest("employee/status", Method.GET);
+            var response = await ExecuteRequestAsync(request);
+
+            return JsonConvert.DeserializeObject<IEnumerable<EmployeeStatusDTO>>(response.Content);
+        }
+
+        public async Task UpdateEmployeeAsync(int id, EmployeeDTO employee)
+        {
+            var request = new RestRequest($"employee/{id}", Method.PUT);
+            request.AddJsonBody(employee);
+
+            await ExecuteRequestAsync(request);
         }
     }
 }

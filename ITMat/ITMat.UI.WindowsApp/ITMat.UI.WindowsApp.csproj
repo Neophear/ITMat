@@ -108,6 +108,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\CommentControl.xaml.cs">
+      <DependentUpon>CommentControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\EditableTextBox.xaml.cs">
       <DependentUpon>EditableTextBox.xaml</DependentUpon>
     </Compile>
@@ -126,15 +129,25 @@
     <Compile Include="Pages\LoansPage.xaml.cs">
       <DependentUpon>LoansPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\PageMode.cs" />
     <Compile Include="Pages\StartPage.xaml.cs">
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\AbstractService.cs" />
     <Compile Include="Services\EmployeeService.cs" />
-    <Compile Include="Services\IEmployeeService.cs" />
-    <Compile Include="Services\ILoanService.cs" />
+    <Compile Include="Services\Interfaces\IEmployeeService.cs" />
+    <Compile Include="Services\Interfaces\ILoanService.cs" />
+    <Compile Include="Services\Interfaces\ICommentService.cs" />
+    <Compile Include="Services\CommentService.cs" />
+    <Compile Include="Services\LoanService.cs" />
+    <Compile Include="Services\MockService\AbstractMockService.cs" />
+    <Compile Include="Services\MockService\MockCommentService.cs" />
     <Compile Include="Services\MockService\MockEmployeeService.cs" />
     <Compile Include="Services\MockService\MockLoanService.cs" />
+    <Page Include="Controls\CommentControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\EditableTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

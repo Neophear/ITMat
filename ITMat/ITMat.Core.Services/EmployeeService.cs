@@ -5,6 +5,7 @@ using ITMat.Core.Interfaces;
 using ITMat.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -24,8 +25,18 @@ namespace ITMat.Core.Services
         public async Task<EmployeeDTO> GetEmployeeAsync(int id)
             => Mapper.Map<EmployeeDTO>(await repo.GetEmployeeAsync(id));
 
-        public async Task<IEnumerable<EmployeeDTO>> GetEmployeesAsync()
-            => Mapper.Map<IEnumerable<EmployeeDTO>>(await repo.GetEmployeesAsync());
+        //public async Task<IEnumerable<EmployeeDTO>> GetEmployeesAsync()
+        //    => Mapper.Map<IEnumerable<EmployeeDTO>>(await repo.GetEmployeesAsync());
+
+        public async Task<IEnumerable<EmployeeListedDTO>> GetEmployeesAsync()
+            => (await repo.GetEmployeesAsync()).Select(e
+                => new EmployeeListedDTO
+                {
+                    Id = e.Id,
+                    MANR = e.MANR,
+                    Name = e.Name,
+                    Status = e.Status.Name
+                });
 
         public async Task<IEnumerable<EmployeeStatusDTO>> GetEmployeeStatusesAsync()
             => Mapper.Map<IEnumerable<EmployeeStatusDTO>>(await repo.GetEmployeeStatusesAsync());

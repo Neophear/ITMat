@@ -1,10 +1,12 @@
 ﻿using ITMat.Core.DTO;
-using ITMat.UI.WindowsApp.Services;
+using ITMat.UI.WindowsApp.Controls;
+using ITMat.UI.WindowsApp.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ITMat.UI.WindowsApp.Pages
 {
@@ -49,28 +51,16 @@ namespace ITMat.UI.WindowsApp.Pages
             DependencyProperty.Register("Name", typeof(string), typeof(EmployeePage), new PropertyMetadata(""));
         #endregion
 
-        #region StatusId
-        public int StatusId
+        #region Status
+        public EmployeeStatusDTO Status
         {
-            get { return (int)GetValue(StatusIdProperty); }
-            set { SetValue(StatusIdProperty, value); }
+            get { return (EmployeeStatusDTO)GetValue(StatusProperty); }
+            set { SetValue(StatusProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for StatusId.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty StatusIdProperty =
-            DependencyProperty.Register("StatusId", typeof(int), typeof(EmployeePage), new PropertyMetadata(0));
-        #endregion
-
-        #region Loans
-        public IEnumerable<LoanDTO> Loans
-        {
-            get { return (IEnumerable<LoanDTO>)GetValue(LoansProperty); }
-            set { SetValue(LoansProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Loans.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty LoansProperty =
-            DependencyProperty.Register("Loans", typeof(IEnumerable<LoanDTO>), typeof(EmployeePage), new PropertyMetadata(new LoanDTO[0]));
+        public static readonly DependencyProperty StatusProperty =
+            DependencyProperty.Register("Status", typeof(EmployeeStatusDTO), typeof(EmployeePage), new PropertyMetadata(null));
         #endregion
 
         #region Statuses
@@ -85,8 +75,34 @@ namespace ITMat.UI.WindowsApp.Pages
             DependencyProperty.Register("Statuses", typeof(IEnumerable<EmployeeStatusDTO>), typeof(EmployeePage), new PropertyMetadata(new EmployeeStatusDTO[0]));
         #endregion
 
+        #region Loans
+        public IEnumerable<LoanListedDTO> Loans
+        {
+            get { return (IEnumerable<LoanListedDTO>)GetValue(LoansProperty); }
+            set { SetValue(LoansProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Loans.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty LoansProperty =
+            DependencyProperty.Register("Loans", typeof(IEnumerable<LoanListedDTO>), typeof(EmployeePage), new PropertyMetadata(new LoanListedDTO[0]));
+        #endregion
+
+        #region Comments
+        public IEnumerable<CommentDTO> Comments
+        {
+            get { return (IEnumerable<CommentDTO>)GetValue(CommentsProperty); }
+            set { SetValue(CommentsProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Comments.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty CommentsProperty =
+            DependencyProperty.Register("Comments", typeof(IEnumerable<CommentDTO>), typeof(EmployeePage), new PropertyMetadata(null));
+        #endregion
+
         private EmployeeDTO originalEmployee;
+
         private readonly IEmployeeService employeeService;
+        private readonly ICommentService commentService;
         private readonly ILoanService loanService;
 
         public EmployeePage(int id)
@@ -96,6 +112,7 @@ namespace ITMat.UI.WindowsApp.Pages
             Mode = PageMode.Read;
 
             employeeService = App.ServiceProvider.GetRequiredService<IEmployeeService>();
+            commentService = App.ServiceProvider.GetRequiredService<ICommentService>();
             loanService = App.ServiceProvider.GetRequiredService<ILoanService>();
 
             Loaded += (_, __) => LoadData(id);
@@ -103,7 +120,9 @@ namespace ITMat.UI.WindowsApp.Pages
 
         private async void LoadData(int id)
         {
-            Status = "Henter medarbejder...";
+            Mode = PageMode.BusyLoading;
+
+            StatusMessage = "Henter medarbejder...";
 
             try
             {
@@ -111,15 +130,17 @@ namespace ITMat.UI.WindowsApp.Pages
 
                 var employee = await employeeService.GetEmployeeAsync(id);
                 SetValues(employee);
-
+                Comments = await commentService.GetEmployeeCommentsAsync(id);
                 Loans = await loanService.GetEmployeeLoansAsync(id);
+
+                StatusMessage = $"{Name} hentet.";
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                StatusMessage = ex.Message;
             }
 
-            Status = $"{Name} hentet.";
+            Mode = PageMode.Read;
         }
 
         private void SetValues(EmployeeDTO employee)
@@ -127,13 +148,13 @@ namespace ITMat.UI.WindowsApp.Pages
             Id = employee.Id;
             MANR = employee.MANR;
             Name = employee.Name;
-            StatusId = employee.Status;
+            Status = Statuses.FirstOrDefault(s => s.Id == employee.Status);
         }
 
         private async void BtnCreate_Click(object sender, RoutedEventArgs e)
         {
             Mode = PageMode.BusyCreating;
-            Status = "Opretter medarbejder...";
+            StatusMessage = "Opretter medarbejder...";
 
             try
             {
@@ -141,7 +162,7 @@ namespace ITMat.UI.WindowsApp.Pages
                 {
                     MANR = MANR,
                     Name = Name,
-                    Status = StatusId
+                    Status = Status?.Id ?? 0
                 });
 
                 PageChangeRequest(new EmployeePage(newId));
@@ -160,7 +181,7 @@ namespace ITMat.UI.WindowsApp.Pages
                 Id = Id,
                 MANR = MANR,
                 Name = Name,
-                Status = StatusId
+                Status = Status?.Id ?? 0
             };
 
             Mode = PageMode.Edit;
@@ -174,16 +195,16 @@ namespace ITMat.UI.WindowsApp.Pages
 
         private async void BtnUpdate_Click(object sender, RoutedEventArgs e)
         {
-            Status = "Gemmer medarbejder...";
+            StatusMessage = "Gemmer medarbejder...";
             Mode = PageMode.BusyUpdating;
+
             try
             {
-
-                await employeeService.UpdateEmployeeAsync(Id, new EmployeeDTO { Id = Id, MANR = MANR, Name = Name, Status = StatusId });
+                await employeeService.UpdateEmployeeAsync(Id, new EmployeeDTO { Id = Id, MANR = MANR, Name = Name, Status = Status?.Id ?? 0 });
                 var updatedEmployee = await employeeService.GetEmployeeAsync(Id);
                 SetValues(updatedEmployee);
 
-                Status = "Gemt!";
+                StatusMessage = "Gemt!";
                 Mode = PageMode.Read;
             }
             catch (Exception ex)
@@ -192,5 +213,33 @@ namespace ITMat.UI.WindowsApp.Pages
                 Mode = PageMode.Edit;
             }
         }
+
+        private async void CommentControl_CreateClicked(object sender, EventArgs e)
+        {
+            if (!(sender is CommentControl commentCtrl))
+                return;
+
+            commentCtrl.IsEnabled = false;
+            StatusMessage = "Opretter kommentar...";
+
+            try
+            {
+                await commentService.CreateEmployeeCommentAsync(Id, commentCtrl.Text);
+                Comments = await commentService.GetEmployeeCommentsAsync(Id);
+                commentCtrl.Text = "";
+                StatusMessage = "Kommentar oprettet!";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = ex.Message; 
+            }
+            finally
+            {
+                commentCtrl.IsEnabled = true;
+            }
+        }
+
+        private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+            => PageChangeRequest(new LoanPage((((DataGridRow)sender).Item as LoanListedDTO).Id));
     }
 }

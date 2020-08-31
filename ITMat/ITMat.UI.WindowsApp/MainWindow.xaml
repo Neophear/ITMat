@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ITMat.UI.WindowsApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="1024">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -24,7 +24,7 @@
         </Menu>
         <Frame x:Name="frmContent" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" NavigationUIVisibility="Hidden"/>
         <StatusBar Grid.Row="2" HorizontalAlignment="Stretch">
-            <TextBlock Text="{Binding ElementName=frmContent, Path=Content.DataContext.Status}" />
+            <TextBlock Text="{Binding ElementName=frmContent, Path=Content.DataContext.StatusMessage}" />
         </StatusBar>
     </Grid>
 </Window>

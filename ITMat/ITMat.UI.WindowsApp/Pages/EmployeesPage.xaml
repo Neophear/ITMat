@@ -9,9 +9,17 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="EmployeesPage"
       DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Page.Resources>
+        <CollectionViewSource x:Key="cvsEmployees" Source="{Binding Employees}" Filter="CollectionViewSource_Filter" />
+    </Page.Resources>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBox Grid.Row="0" x:Name="txtFilter" KeyUp="TxtFilter_KeyUp" Text="{Binding Filter}" />
         <DataGrid x:Name="dgEmployees" Grid.Row="1" HorizontalAlignment="Stretch" SelectionMode="Single" IsReadOnly="True" AutoGenerateColumns="False"
-                    ColumnWidth="*" SelectedValuePath="Id" ItemsSource="{Binding Employees}" CanUserReorderColumns="False" HeadersVisibility="Column">
+                    ColumnWidth="*" SelectedValuePath="Id" ItemsSource="{Binding Source={StaticResource cvsEmployees}}" CanUserReorderColumns="False" HeadersVisibility="Column">
             <DataGrid.Resources>
                 <Style TargetType="DataGridRow">
                     <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick" />
@@ -21,7 +29,7 @@
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
                 <DataGridTextColumn Header="MANR" Binding="{Binding MANR}" />
                 <DataGridTextColumn Header="Navn" Binding="{Binding Name}" />
-                <DataGridTextColumn Header="Status" Binding="{c:Binding '$P0.FirstOrDefault(((EmployeeStatusDTO)s) => $s.Id == $P1).Name'}" />
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using ITMat.UI.WindowsApp.Pages;
+using System.Windows;
 using System.Windows.Controls;
-using static ITMat.UI.WindowsApp.Pages.AbstractPage;
 
 namespace ITMat.UI.WindowsApp.Controls
 {

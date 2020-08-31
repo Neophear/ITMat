@@ -33,17 +33,27 @@ namespace ITMat.Core.Services
         public async Task<IEnumerable<LoanDTO>> GetLoansAsync()
             => Mapper.Map<IEnumerable<LoanDTO>>(await loanRepo.GetLoansAsync());
 
-        public async Task<IEnumerable<LoanListedDTO>> GetLoansListedAsync()
+        public async Task<IEnumerable<LoanListedDTO>> GetEmployeeLoansAsync(int employeeId)
+             => (await loanRepo.GetEmployeeLoansAsync(employeeId))
+                .Select(l => new LoanListedDTO
+                {
+                    Id = l.Id,
+                    DateFrom = l.DateFrom,
+                    DateTo = l.DateTo,
+                    Active = l.Active
+                });
+
+        public async Task<IEnumerable<LoanEmployeeListedDTO>> GetLoansListedAsync()
         {
             var loans = Mapper.Map<IEnumerable<LoanDTO>>(await loanRepo.GetLoansAsync());
 
-            var loanListed = new List<LoanListedDTO>(loans.Count());
+            var loanListed = new List<LoanEmployeeListedDTO>(loans.Count());
 
             foreach (var loan in loans)
             {
                 var employee = await employeeRepo.GetEmployeeAsync(loan.EmployeeId);
 
-                loanListed.Add(new LoanListedDTO
+                loanListed.Add(new LoanEmployeeListedDTO
                 {
                     Id = loan.Id,
                     MANR = employee.MANR,

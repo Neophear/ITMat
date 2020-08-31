@@ -1,5 +1,5 @@
 ﻿using ITMat.Core.DTO;
-using ITMat.UI.WindowsApp.Services;
+using ITMat.UI.WindowsApp.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -15,15 +15,15 @@ namespace ITMat.UI.WindowsApp.Pages
     public partial class LoansPage : AbstractPage
     {
         #region Loans
-        public IEnumerable<LoanListedDTO> Loans
+        public IEnumerable<LoanEmployeeListedDTO> Loans
         {
-            get { return (IEnumerable<LoanListedDTO>)GetValue(LoansProperty); }
+            get { return (IEnumerable<LoanEmployeeListedDTO>)GetValue(LoansProperty); }
             set { base.SetValue(LoansProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for loans.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LoansProperty =
-            DependencyProperty.Register("Loans", typeof(IEnumerable<LoanListedDTO>), typeof(LoansPage), new PropertyMetadata(new LoanListedDTO[0]));
+            DependencyProperty.Register("Loans", typeof(IEnumerable<LoanEmployeeListedDTO>), typeof(LoansPage), new PropertyMetadata(new LoanEmployeeListedDTO[0]));
         #endregion
 
         private readonly ILoanService service;
@@ -39,7 +39,7 @@ namespace ITMat.UI.WindowsApp.Pages
 
         private async void LoansPage_Loaded(object sender, RoutedEventArgs e)
         {
-            Status = "Henter udlån...";
+            StatusMessage = "Henter udlån...";
 
             try
             {
@@ -50,10 +50,10 @@ namespace ITMat.UI.WindowsApp.Pages
                 MessageBox.Show(ex.Message);
             }
 
-            Status = $"{Loans.Count()} udlån hentet.";
+            StatusMessage = $"{Loans.Count()} udlån hentet.";
         }
 
         private void DataGridRow_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-            => PageChangeRequest(new LoanPage((((DataGridRow)sender).Item as LoanListedDTO).Id));
+            => PageChangeRequest(new LoanPage((((DataGridRow)sender).Item as LoanEmployeeListedDTO).Id));
     }
 }

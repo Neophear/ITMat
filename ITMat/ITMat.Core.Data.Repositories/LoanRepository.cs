@@ -16,6 +16,8 @@ namespace ITMat.Core.Data.Repositories
                              SqlGetActiveLoans = SqlGetLoans + " where active = 1",
                              SqlGetFinishedLoans = SqlGetLoans + " where active = 0",
                              SqlGetLoan = SqlGetLoans + " where id = @id",
+                             
+                             SqlGetEmployeeLoans = SqlGetLoans + " where employee_id = @employeeId",
 
                              SqlGetLoanLineItems = "select * from loanlineitem l inner join item i on l.item_id = i.id where l.loan_id = @loanId",
                              SqlGetLoanLineGenericItems = "select * from loanlinegenericitem where loan_id = @loanId",
@@ -51,6 +53,9 @@ namespace ITMat.Core.Data.Repositories
 
         public async Task<Loan> GetLoanAsync(int id)
             => await QuerySingleAsync(SqlGetLoan);
+
+        public async Task<IEnumerable<Loan>> GetEmployeeLoansAsync(int employeeId)
+            => await QueryMultipleAsync(SqlGetEmployeeLoans, new { employeeId });
 
         public async Task<IEnumerable<LoanLineItem>> GetLoanLineItemsAsync(int loanId)
             => await QueryMultipleAsync<LoanLineItem>(SqlGetLoanLineItems, new { loanId });

@@ -1,4 +1,5 @@
 ﻿using ITMat.Core.DTO;
+using ITMat.UI.WindowsApp.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using RestSharp;
@@ -28,34 +29,18 @@ namespace ITMat.UI.WindowsApp.Services
         }
 
         public async Task<EmployeeDTO> GetEmployeeAsync(int id)
-        {
-            var request = new RestRequest($"employee/{id}", Method.GET);
-            var response = await ExecuteRequestAsync(request);
+            => await ExecuteAsync<EmployeeDTO>(new RestRequest($"employee/{id}", Method.GET));
 
-            return JsonConvert.DeserializeObject<EmployeeDTO>(response.Content);
-        }
-
-        public async Task<IEnumerable<EmployeeDTO>> GetEmployeesAsync()
-        {
-            var request = new RestRequest("employee", Method.GET);
-            var response = await ExecuteRequestAsync(request);
-
-            return JsonConvert.DeserializeObject<IEnumerable<EmployeeDTO>>(response.Content);
-        }
+        public async Task<IEnumerable<EmployeeListedDTO>> GetEmployeesAsync()
+            => await ExecuteAsync<IEnumerable<EmployeeListedDTO>>(new RestRequest("employee", Method.GET));
 
         public async Task<IEnumerable<EmployeeStatusDTO>> GetStatusesAsync()
-        {
-            var request = new RestRequest("employee/status", Method.GET);
-            var response = await ExecuteRequestAsync(request);
-
-            return JsonConvert.DeserializeObject<IEnumerable<EmployeeStatusDTO>>(response.Content);
-        }
+            => await ExecuteAsync<IEnumerable<EmployeeStatusDTO>>(new RestRequest("employee/status", Method.GET));
 
         public async Task UpdateEmployeeAsync(int id, EmployeeDTO employee)
         {
             var request = new RestRequest($"employee/{id}", Method.PUT);
             request.AddJsonBody(employee);
-
             await ExecuteRequestAsync(request);
         }
     }

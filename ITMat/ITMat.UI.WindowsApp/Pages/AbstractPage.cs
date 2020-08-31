@@ -7,16 +7,16 @@ namespace ITMat.UI.WindowsApp.Pages
 {
     public abstract class AbstractPage : Page
     {
-        #region Status
-        public string Status
+        #region StatusMessage
+        public string StatusMessage
         {
-            get { return (string)GetValue(StatusProperty); }
-            set { SetValue(StatusProperty, value); }
+            get { return (string)GetValue(StatusMessageProperty); }
+            set { SetValue(StatusMessageProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Status.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty StatusProperty =
-            DependencyProperty.Register("Status", typeof(string), typeof(AbstractPage), new PropertyMetadata(""));
+        public static readonly DependencyProperty StatusMessageProperty =
+            DependencyProperty.Register("StatusMessage", typeof(String), typeof(AbstractPage), new PropertyMetadata(""));
         #endregion
 
         #region Mode
@@ -45,15 +45,6 @@ namespace ITMat.UI.WindowsApp.Pages
             MenuItem menuItem = new MenuItem { Header = header };
             menuItem.Click += (_, __) => clickEvent();
             Menu.Add(menuItem);
-        }
-
-        public enum PageMode
-        {
-            Create,
-            Read,
-            Edit,
-            BusyCreating,
-            BusyUpdating
         }
     }
 }

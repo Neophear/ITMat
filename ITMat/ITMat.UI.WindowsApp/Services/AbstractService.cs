@@ -1,5 +1,6 @@
 ﻿using ITMat.UI.WindowsApp.Models.Exceptions;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
 using System;
@@ -13,6 +14,12 @@ namespace ITMat.UI.WindowsApp.Services
 
         public AbstractService(IConfiguration configuration)
             => client = new RestClient(configuration["api_url"]) { Authenticator = new NtlmAuthenticator() };
+
+        public async Task<T> ExecuteAsync<T>(IRestRequest request)
+        {
+            var response = await ExecuteRequestAsync(request);
+            return JsonConvert.DeserializeObject<T>(response.Content);
+        }
 
         public async Task<IRestResponse> ExecuteRequestAsync(IRestRequest request)
         {

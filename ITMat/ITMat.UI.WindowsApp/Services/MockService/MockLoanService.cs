@@ -1,4 +1,5 @@
 ﻿using ITMat.Core.DTO;
+using ITMat.UI.WindowsApp.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +7,15 @@ using System.Threading.Tasks;
 
 namespace ITMat.UI.WindowsApp.Services.MockService
 {
-    public class MockLoanService : ILoanService
+    public class MockLoanService : AbstractMockService, ILoanService
     {
         private readonly List<LoanDTO> loans;
+        private readonly IEnumerable<EmployeeDTO> employees = new EmployeeDTO[3]
+            {
+                new EmployeeDTO{ Id = 1, MANR = "370929", Name = "Stiig Gade", Status = 1 },
+                new EmployeeDTO{ Id = 2, MANR = "123456", Name = "Peter Petersen", Status = 1 },
+                new EmployeeDTO{ Id = 3, MANR = "654321", Name = "Jens Jensen", Status = 2 }
+            };
 
         public MockLoanService()
         {
@@ -48,34 +55,41 @@ namespace ITMat.UI.WindowsApp.Services.MockService
             }
         }
 
-        public async Task<IEnumerable<LoanDTO>> GetEmployeeLoansAsync(int employeeId)
-        {
-            await Task.Delay(200);
-            return loans.Where(l => l.EmployeeId == employeeId);
-        }
-
-        public async Task<LoanDTO> GetLoanAsync(int id)
-        {
-            await Task.Delay(200);
-            return loans.FirstOrDefault(l => l.Id == id);
-        }
-
-        public async Task<IEnumerable<LoanListedDTO>> GetLoansAsync()
-        {
-            await Task.Delay(200);
-
-            var employees = new EmployeeDTO[3]
+        private LoanDTO CopyLoan(LoanDTO loan)
+            => new LoanDTO
             {
-                new EmployeeDTO{ Id = 1, MANR = "370929", Name = "Stiig Gade", Status = 1 },
-                new EmployeeDTO{ Id = 2, MANR = "123456", Name = "Peter Petersen", Status = 1 },
-                new EmployeeDTO{ Id = 3, MANR = "654321", Name = "Jens Jensen", Status = 2 }
+                Id = loan.Id,
+                Active = loan.Active,
+                DateFrom = loan.DateFrom,
+                DateTo = loan.DateTo,
+                EmployeeId = loan.EmployeeId,
+                Note = loan.Note,
+                RecipientId = loan.RecipientId,
+                ItemLines = loan.ItemLines.ToList(),
+                GenericItemLines = loan.GenericItemLines.ToList()
             };
 
-            return loans.Select(l =>
+        public async Task<IEnumerable<LoanListedDTO>> GetEmployeeLoansAsync(int employeeId)
+            => await ExecuteWithDelay(() =>
+                loans
+                .Where(l => l.EmployeeId == employeeId)
+                .Select(l => new LoanListedDTO
+                {
+                    Id = l.Id,
+                    DateFrom = l.DateFrom,
+                    DateTo = l.DateTo,
+                    Active = l.Active
+                }));
+
+        public async Task<LoanDTO> GetLoanAsync(int id)
+            => await ExecuteWithDelay(() => CopyLoan(loans.FirstOrDefault(l => l.Id == id)));
+
+        public async Task<IEnumerable<LoanEmployeeListedDTO>> GetLoansAsync()
+            => await ExecuteWithDelay(() => loans.Select(l =>
             {
                 var employee = employees.FirstOrDefault(e => e.Id == l.EmployeeId);
 
-                return new LoanListedDTO
+                return new LoanEmployeeListedDTO
                 {
                     Id = l.Id,
                     MANR = employee.MANR,
@@ -84,7 +98,6 @@ namespace ITMat.UI.WindowsApp.Services.MockService
                     DateTo = l.DateTo,
                     Active = l.Active
                 };
-            });
-        }
+            }));
     }
 }

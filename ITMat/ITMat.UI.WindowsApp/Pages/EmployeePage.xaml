@@ -6,6 +6,7 @@
       xmlns:local="clr-namespace:ITMat.UI.WindowsApp.Pages"
       xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
       xmlns:control="clr-namespace:ITMat.UI.WindowsApp.Controls"
+      xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
       DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -13,48 +14,71 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" Text="Id" />
-        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Id}" Margin="5" Background="LightGray" HorizontalAlignment="Left" Width="200" IsReadOnly="True" />
+        
+        <!--Info-->
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="200" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" Text="Id" />
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Id}" Margin="5" Background="LightGray" IsReadOnly="True" />
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="MANR" />
-        <control:EditableTextBox Grid.Row="1" Grid.Column="1" Text="{Binding MANR}" Margin="5"
-                 Mode="{Binding Mode}" HorizontalAlignment="Left" Width="200" />
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="MANR" />
+            <control:EditableTextBox Grid.Row="1" Grid.Column="1" Text="{Binding MANR}" Margin="5" Mode="{Binding Mode}" />
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Text="Navn" />
-        <control:EditableTextBox Grid.Row="2" Grid.Column="1" Text="{Binding Name}" Margin="5"
-                 Mode="{Binding Mode}" HorizontalAlignment="Left" Width="200" />
+            <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Text="Navn" />
+            <control:EditableTextBox Grid.Row="2" Grid.Column="1" Text="{Binding Name}" Margin="5" Mode="{Binding Mode}" />
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Text="Status" />
-        <TextBox Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Width="200" Margin="5" IsReadOnly="True" TextWrapping="Wrap"
-                 Visibility="{c:Binding 'Mode == PageMode.Read'}"
-                 Text="{c:Binding 'Statuses.FirstOrDefault(s => s.Id == 1).Name', Mode=OneWay}" />
-        <!--Text="{c:Binding 'Statuses.FirstOrDefault(s => s.Id == 1).Name'}" />-->
-        <!--<ComboBox Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" Width="200" Height="18" Margin="5" ItemsSource="{Binding Statuses}"
-                  Visibility="{qc:Binding '(int)$P == 0 || (int)$P == 2 ? Visibility.Visible : Visibility.Collapsed', P={Binding Mode}}"
-                  Background="{qc:Binding '$P ? Brushes.Cornsilk : Brushes.LightGray', P={Binding Mode}}"
-                  DisplayMemberPath="Name" SelectedValuePath="Id" SelectedValue="{Binding Employee.Status}" />-->
+            <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Text="Status" />
+            <TextBox Grid.Row="3" Grid.Column="1" Margin="5" IsReadOnly="True" TextWrapping="Wrap"
+                 Visibility="{c:Binding 'Mode == local:PageMode.Read'}" Text="{Binding Status.Name}" />
+            <ComboBox Grid.Row="3" Grid.Column="1" Height="18" Padding="3 1" Margin="5"
+                  Visibility="{c:Binding 'Mode != local:PageMode.Read'}" ItemsSource="{Binding Statuses}"
+                  IsEnabled="{c:Binding 'Mode == local:PageMode.Edit || Mode == local:PageMode.Create'}"
+                  Background="{c:Binding 'Mode == local:PageMode.Edit ? media:Brushes.Cornsilk : media:Brushes.LightGray'}"
+                  DisplayMemberPath="Name" SelectedValuePath="Id" SelectedItem="{Binding Status}" />
 
-        <StackPanel Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Content="Rediger" Margin="5" Padding="5" Click="BtnEdit_Click"
-                    IsEnabled="{c:Binding '(int)Mode == 1'}"
-                    Visibility="{c:Binding '(int)Mode == 1 ? Visibility.Visible : Visibility.Collapsed'}" />
-            <!--<Button Content="Annuller" Visibility="{qc:Binding '(int)$P == 2 ? Visibility.Visible : Visibility.Collapsed', P={Binding Mode}}" Margin="5" Padding="5" Click="BtnCancel_Click" />
-            <Button Content="Gem" Visibility="{qc:Binding '(int)$P == 2 ? Visibility.Visible : Visibility.Collapsed', P={Binding Mode}}" Margin="5" Padding="5" Click="BtnUpdate_Click" />
-            <Button Content="Gem" Visibility="{qc:Binding '(int)$P == 0 ? Visibility.Visible : Visibility.Collapsed', P={Binding Mode}}" Margin="5" Padding="5" Click="BtnCreate_Click" />-->
-        </StackPanel>
+            <!--Info buttons-->
+            <StackPanel Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal">
+                <Button Content="Rediger" Margin="5" Padding="5" Click="BtnEdit_Click" IsEnabled="{c:Binding 'Mode == local:PageMode.Read'}"
+                        Visibility="{c:Binding 'Mode == local:PageMode.Read || Mode == local:PageMode.BusyLoading'}" />
 
-        <DataGrid Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" SelectionMode="Single" IsReadOnly="True"
-                        AutoGenerateColumns="False" ItemsSource="{Binding Path=Loans}" ColumnWidth="*" CanUserReorderColumns="False" HeadersVisibility="Column">
+                <Button Content="Annuller" Margin="5" Padding="5" Click="BtnCancel_Click" IsEnabled="{c:Binding 'Mode == local:PageMode.Edit'}"
+                    Visibility="{c:Binding 'Mode == local:PageMode.Edit || Mode == local:PageMode.BusyUpdating'}" />
+                <Button Content="Gem" Margin="5" Padding="5" Click="BtnUpdate_Click" IsEnabled="{c:Binding 'Mode == local:PageMode.Edit'}"
+                    Visibility="{c:Binding 'Mode == local:PageMode.Edit || Mode == local:PageMode.BusyUpdating'}" />
+
+                <Button Content="Opret" Margin="5" Padding="5" Click="BtnCreate_Click" IsEnabled="{c:Binding 'Mode == local:PageMode.Create'}"
+                    Visibility="{c:Binding 'Mode == local:PageMode.Create || Mode == local:PageMode.BusyCreating'}" />
+            </StackPanel>
+        </Grid>
+
+        <!--Comments -->
+        <control:CommentControl Grid.Row="0" Grid.Column="1" MaxHeight="300" CommentsSource="{Binding Comments}"
+                                CreateClicked="CommentControl_CreateClicked" />
+        
+        <!--Loans-->
+        <DataGrid Grid.Row="1" Grid.ColumnSpan="2" SelectionMode="Single" IsReadOnly="True" ColumnWidth="*" HeadersVisibility="Column"
+                  AutoGenerateColumns="False" ItemsSource="{Binding Loans}" CanUserReorderColumns="False">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridRow">
+                    <EventSetter Event="MouseDoubleClick" Handler="DataGridRow_MouseDoubleClick" />
+                </Style>
+            </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" />
                 <DataGridTextColumn Header="Fra" Binding="{Binding DateFrom, StringFormat=dd-MM-yyyy}" />

@@ -11,6 +11,7 @@ namespace ITMat.Core.Data.Interfaces
         Task<IEnumerable<Loan>> GetActiveLoansAsync();
         Task<IEnumerable<Loan>> GetFinishedLoansAsync();
         Task<Loan> GetLoanAsync(int id);
+        Task<IEnumerable<Loan>> GetEmployeeLoansAsync(int employeeId);
         Task<IEnumerable<LoanLineItem>> GetLoanLineItemsAsync(int loanId);
         Task<IEnumerable<LoanLineGenericItem>> GetLoanLineGenericItemsAsync(int loanId);
         Task<int> InsertLoanAsync(Loan loan, IEnumerable<int> itemIds, IEnumerable<int> genericItemIds);

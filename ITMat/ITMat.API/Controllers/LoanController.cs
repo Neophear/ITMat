@@ -30,6 +30,14 @@ namespace ITMat.API.Controllers
             return await TryOrError(logger, async () => await service.GetLoansListedAsync());
         }
 
+        // GET: api/loan/employee/5
+        [HttpGet("employee/{employeeId}")]
+        public async Task<IActionResult> GetEmployeeLoans(int employeeId)
+        {
+            logger.LogInformation("{username} executed GetEmployeeLoans({employeeId}).", User.Identity.Name, employeeId);
+            return await TryOrError(logger, async () => await service.GetEmployeeLoansAsync(employeeId));
+        }
+
         // GET api/<LoanController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ITMat.UI.WindowsApp.Services
+namespace ITMat.UI.WindowsApp.Services.Interfaces
 {
     public interface IEmployeeService
     {
         Task<int> CreateEmployeeAsync(EmployeeDTO employee);
 
-        Task<IEnumerable<EmployeeDTO>> GetEmployeesAsync();
+        Task<IEnumerable<EmployeeListedDTO>> GetEmployeesAsync();
         Task<EmployeeDTO> GetEmployeeAsync(int id);
         Task<IEnumerable<EmployeeStatusDTO>> GetStatusesAsync();
 

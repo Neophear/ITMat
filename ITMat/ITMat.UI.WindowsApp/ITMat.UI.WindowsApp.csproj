@@ -232,6 +232,10 @@
       <Project>{542052ef-f12c-4ea3-a28f-769af34eb0c9}</Project>
       <Name>ITMat.Core.DTO</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ITMat.Core.Interfaces\ITMat.Core.Interfaces.csproj">
+      <Project>{8B9F0C74-C4BC-41C5-B216-9DE18947DCEB}</Project>
+      <Name>ITMat.Core.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

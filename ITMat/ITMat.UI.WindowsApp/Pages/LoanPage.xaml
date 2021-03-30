@@ -4,10 +4,67 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ITMat.UI.WindowsApp.Pages"
+      xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+      xmlns:control="clr-namespace:ITMat.UI.WindowsApp.Controls"
+      xmlns:media="clr-namespace:System.Windows.Media;assembly=PresentationCore"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="LoanPage">
+      DataContext="{Binding RelativeSource={RelativeSource Self}}"
+      Title="{Binding Id}">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!--Info-->
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="200" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" Text="Id" />
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Id}" Margin="5" Background="LightGray" IsReadOnly="True" />
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="MANR" />
+            <control:EditableTextBox Grid.Row="1" Grid.Column="1" Text="{Binding MANR}" Margin="5" Mode="{Binding Mode}" />
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Text="Navn" />
+            <control:EditableTextBox Grid.Row="2" Grid.Column="1" Text="{Binding Name}" Margin="5" Mode="{Binding Mode}" />
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Text="Status" />
+            <TextBox Grid.Row="3" Grid.Column="1" Margin="5" IsReadOnly="True" TextWrapping="Wrap"
+                 Visibility="{c:Binding 'Mode == local:PageMode.Read'}" Text="{Binding Status.Name}" />
+            <ComboBox Grid.Row="3" Grid.Column="1" Height="18" Padding="3 1" Margin="5"
+                  Visibility="{c:Binding 'Mode != local:PageMode.Read'}" ItemsSource="{Binding Statuses}"
+                  IsEnabled="{c:Binding 'Mode == local:PageMode.Edit || Mode == local:PageMode.Create'}"
+                  Background="{c:Binding 'Mode == local:PageMode.Edit ? media:Brushes.Cornsilk : media:Brushes.LightGray'}"
+                  DisplayMemberPath="Name" SelectedValuePath="Id" SelectedItem="{Binding Status}" />
+
+            <!--Info buttons-->
+            <StackPanel Grid.Row="4" Grid.ColumnSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal">
+                <Button Content="Rediger" Margin="5" Padding="5" Click="BtnEdit_Click" IsEnabled="{c:Binding 'Mode == local:PageMode.Read'}"
+                        Visibility="{c:Binding 'Mode == local:PageMode.Read || Mode == local:PageMode.BusyLoading'}" />
+
+                <Button Content="Annuller" Margin="5" Padding="5" Click="BtnCancel_Click" IsEnabled="{c:Binding 'Mode == local:PageMode.Edit'}"
+                    Visibility="{c:Binding 'Mode == local:PageMode.Edit || Mode == local:PageMode.BusyUpdating'}" />
+                <Button Content="Gem" Margin="5" Padding="5" Click="BtnUpdate_Click" IsEnabled="{c:Binding 'Mode == local:PageMode.Edit'}"
+                    Visibility="{c:Binding 'Mode == local:PageMode.Edit || Mode == local:PageMode.BusyUpdating'}" />
+
+                <Button Content="Opret" Margin="5" Padding="5" Click="BtnCreate_Click" IsEnabled="{c:Binding 'Mode == local:PageMode.Create'}"
+                    Visibility="{c:Binding 'Mode == local:PageMode.Create || Mode == local:PageMode.BusyCreating'}" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </local:AbstractPage>

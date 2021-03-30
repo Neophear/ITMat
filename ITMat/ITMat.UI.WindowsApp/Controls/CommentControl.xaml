@@ -24,7 +24,7 @@
             </DataGrid.Columns>
         </DataGrid>-->
 
-        <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <ItemsControl ItemsSource="{Binding CommentsSource}" AlternationCount="2">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -39,7 +39,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Row="0" Grid.Column="0" FontSize="11" Padding="3 3 0 0" Text="{Binding Username}" />
                             <TextBlock Grid.Row="0" Grid.Column="1" FontSize="11" Padding="20 3 0 0" Text="{Binding CreatedTime, StringFormat='HH:mm dd/MM/yyyy'}" />
-                            <TextBox Grid.Row="1" Grid.ColumnSpan="2" IsReadOnly="True" BorderThickness="0" Padding="1 0 0 3" Text="{Binding Text}">
+                            <TextBox Grid.Row="1" Grid.ColumnSpan="2" IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0" Padding="1 0 0 3" Text="{Binding Text}">
                                 <TextBox.Background>
                                     <SolidColorBrush Opacity="1" />
                                 </TextBox.Background>
